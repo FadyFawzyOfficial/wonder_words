@@ -7,7 +7,7 @@
             "program": "lib/main.dart",
             "args": [
                 "--dart-define",
-                "fav-qs-qpp-token=2ab722d972da362dfcca10bc7f329021"
+                "fav-qs-app-token=2ab722d972da362dfcca10bc7f329021"
             ]
         }
     ]
