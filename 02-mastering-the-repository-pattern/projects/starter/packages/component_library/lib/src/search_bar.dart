@@ -1,8 +1,8 @@
 import 'package:component_library/component_library.dart';
 import 'package:flutter/material.dart';
 
-class AppAppAppSearchBar extends StatelessWidget {
-  const AppAppAppSearchBar({
+class AppSearchBar extends StatelessWidget {
+  const AppSearchBar({
     this.controller,
     this.onChanged,
     Key? key,
