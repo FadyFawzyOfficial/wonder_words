@@ -54,6 +54,54 @@ class QuoteRepository {
     throw UnimplementedError();
   }
 
+  //* 1: Unlike getQuoteListPage() , this function can only emit one value — either
+  //* the server list or an error. Therefore, having a Future as the return type is enough.
+  Future<QuoteListPage> _getQuoteListPageFromNetwork(
+    int pageNumber, {
+    Tag? tag,
+    String searchTerm = '',
+    String? favoritedByUsername,
+  }) async {
+    try {
+      //* 2: Gets a new page from the remote API.
+      final apiPage = await remoteApi.getQuoteListPage(
+        pageNumber,
+        tag: tag?.toRemoteModel(),
+        searchTerm: searchTerm,
+        favoritedByUsername: favoritedByUsername,
+      );
+
+      final isFiltering = tag != null || searchTerm.isNotEmpty;
+
+      final favoritesOnly = favoritedByUsername != null;
+
+      final shouldStoreOnCache = !isFiltering;
+
+      //! 3: You shouldn’t cache filtered results. If you tried to cache all the searches the
+      //! user could possibly perform, you’d quickly fill up the device’s storage. Plus,
+      //! users are willing to wait longer for searches.
+      if (shouldStoreOnCache) {
+        // 4
+        final shouldEmptyCache = pageNumber == 1;
+        if (shouldEmptyCache) {
+          await _localStorage.clearQuoteListPageList(favoritesOnly);
+        }
+
+        final cachePage = apiPage.toCacheModel();
+        await _localStorage.upsertQuoteListPage(
+          pageNumber,
+          cachePage,
+          favoritesOnly,
+        );
+      }
+
+      final domainPage = apiPage.toDomainModel();
+      return domainPage;
+    } on EmptySearchResultFavQsException catch (_) {
+      throw EmptySearchResultException();
+    }
+  }
+
   Future<Quote> getQuoteDetails(int id) async {
     final cachedQuote = await _localStorage.getQuote(id);
     if (cachedQuote != null) {
