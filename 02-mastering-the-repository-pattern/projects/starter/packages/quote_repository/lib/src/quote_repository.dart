@@ -56,16 +56,16 @@ class QuoteRepository {
     final isFetchPolicyNetworkOnly =
         fetchPolicy == QuoteListPageFetchPolicy.networkOnly;
 
-    //* 1: There are three situations in which you want to skip the cache lookup and
+    //* 1. There are three situations in which you want to skip the cache lookup and
     //* return data straight from the network: If the user has a tag selected, if they’re
     //* searching or if the caller of the function explicitly specified the
     //* networkOnly policy.
     final shouldSkipCacheLookup =
         isFilteringByTag || isSearching || isFetchPolicyNetworkOnly;
 
-    // Fetch QuoteListPage from the internet
+    //? Fetch QuoteListPage from the internet
     if (shouldSkipCacheLookup) {
-      //! 2: This uses the function you created.
+      //! 2. This uses the function you created.
       final freshPage = await _getQuoteListPageFromNetwork(
         pageNumber,
         tag: tag,
@@ -73,17 +73,18 @@ class QuoteRepository {
         favoritedByUsername: favoritedByUsername,
       );
 
-      //! 3: The easiest way to generate a Stream in a Dart function is by adding
+      //! 3. The easiest way to generate a Stream in a Dart function is by adding
       //! async* to the function’s header and then using the yield keyword
       //! whenever you want to emit a new item.
       //! You can take a deep dive on the subject name: Creating streams in Dart.
       yield freshPage;
     } else {
+      //? Fetch QuoteListPage from cache
       final isFilteringByFavorites = favoritedByUsername != null;
 
       final cachedPage = await _localStorage.getQuoteListPage(
         pageNumber,
-        //* 1: Your local storage keeps the favorite list in a separate bucket,
+        //* 1. Your local storage keeps the favorite list in a separate bucket,
         //* so you have to specify whether you're storing the general of the favorites list.
         isFilteringByFavorites,
       );
@@ -94,7 +95,7 @@ class QuoteRepository {
       final isFetchPolicyCachePreferably =
           fetchPolicy == QuoteListPageFetchPolicy.cachePreferably;
 
-      //! 2: Whether fetchPolicy is cacheAndNetwork or cachePreferably, you have to
+      //! 2. Whether fetchPolicy is cacheAndNetwork or cachePreferably, you have to
       //! emit the cached page. The difference between the 2 policies is that, for
       //! cacheAndNetwork, you'll also emit the server page later on.
       final shouldEmitCachedPageInAdvance =
@@ -105,7 +106,7 @@ class QuoteRepository {
         //* you have to call the mapper function to convert it to the domain QuoteListPage .
         yield cachedPage.toDomainModel();
 
-        //! 4: If the policy is cachePreferably and you’ve emitted the cached
+        //! 4. If the policy is cachePreferably and you’ve emitted the cached
         //! page successfully, there’s nothing else to do. You can just return
         //! and close the Stream here.
         if (isFetchPolicyCachePreferably) {
@@ -113,11 +114,39 @@ class QuoteRepository {
         }
       }
 
-      // TODO: Call the remote API.
+      //? Your next step is to fetch the page from the API to complete the 3 remaining scenarios:
+      //! 1. When the policy is cacheAndNetwork. You've already covered the cache part,
+      //! but the AndNetwork is still missing.
+      //! 2. When the policy is cachePreferably and you couldn't get a page form
+      //! the cache (empty cache).
+      //! 3. When the policy is networkPreferably.
+      try {
+        final freshPage = await _getQuoteListPageFromNetwork(
+          pageNumber,
+          favoritedByUsername: favoritedByUsername,
+        );
+        yield freshPage;
+      } catch (_) {
+        //! 1. If the policy is networkPreferably and you got an error trying to fetch a
+        //! page from the network, you try to revert the error by emitting the cached
+        //! page instead — if there is one.
+        final isFetchPolicyNetworkPreferably =
+            fetchPolicy == QuoteListPageFetchPolicy.networkPreferably;
+        if (cachedPage != null && isFetchPolicyNetworkPreferably) {
+          yield cachedPage.toDomainModel();
+          return;
+        }
+
+        //! 2. If the policy is cacheAndNetwork or cachePreferably , you’ve already
+        //! emitted the cached page a few lines earlier, so your only option now is to
+        //! rethrow the error if the network call fails. That way, your state manager can
+        //! handle it properly by showing the user an error.
+        rethrow;
+      }
     }
   }
 
-  //* 1: Unlike getQuoteListPage() , this function can only emit one value — either
+  //* 1. Unlike getQuoteListPage() , this function can only emit one value — either
   //* the server list or an error. Therefore, having a Future as the return type is enough.
   Future<QuoteListPage> _getQuoteListPageFromNetwork(
     int pageNumber, {
@@ -126,7 +155,7 @@ class QuoteRepository {
     String? favoritedByUsername,
   }) async {
     try {
-      //* 2: Gets a new page from the remote API.
+      //* 2. Gets a new page from the remote API.
       final apiPage = await remoteApi.getQuoteListPage(
         pageNumber,
         tag: tag?.toRemoteModel(),
@@ -140,7 +169,7 @@ class QuoteRepository {
 
       final shouldStoreOnCache = !isFiltering;
 
-      //! 3: You shouldn’t cache filtered results. If you tried to cache all the searches the
+      //! 3. You shouldn’t cache filtered results. If you tried to cache all the searches the
       //! user could possibly perform, you’d quickly fill up the device’s storage. Plus,
       //! users are willing to wait longer for searches.
       if (shouldStoreOnCache) {
