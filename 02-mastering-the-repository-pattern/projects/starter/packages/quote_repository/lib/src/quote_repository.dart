@@ -79,7 +79,41 @@ class QuoteRepository {
       //! You can take a deep dive on the subject name: Creating streams in Dart.
       yield freshPage;
     } else {
-      // TODO: Cover other fetch policies.
+      final isFilteringByFavorites = favoritedByUsername != null;
+
+      final cachedPage = await _localStorage.getQuoteListPage(
+        pageNumber,
+        //* 1: Your local storage keeps the favorite list in a separate bucket,
+        //* so you have to specify whether you're storing the general of the favorites list.
+        isFilteringByFavorites,
+      );
+
+      final isFetchPolicyCacheAndNetwork =
+          fetchPolicy == QuoteListPageFetchPolicy.cacheAndNetwork;
+
+      final isFetchPolicyCachePreferably =
+          fetchPolicy == QuoteListPageFetchPolicy.cachePreferably;
+
+      //! 2: Whether fetchPolicy is cacheAndNetwork or cachePreferably, you have to
+      //! emit the cached page. The difference between the 2 policies is that, for
+      //! cacheAndNetwork, you'll also emit the server page later on.
+      final shouldEmitCachedPageInAdvance =
+          isFetchPolicyCacheAndNetwork || isFetchPolicyCachePreferably;
+
+      if (shouldEmitCachedPageInAdvance && cachedPage != null) {
+        //* 3. To return the cached page, which is a QuoteListPageCM,
+        //* you have to call the mapper function to convert it to the domain QuoteListPage .
+        yield cachedPage.toDomainModel();
+
+        //! 4: If the policy is cachePreferably and you’ve emitted the cached
+        //! page successfully, there’s nothing else to do. You can just return
+        //! and close the Stream here.
+        if (isFetchPolicyCachePreferably) {
+          return;
+        }
+      }
+
+      // TODO: Call the remote API.
     }
   }
 
