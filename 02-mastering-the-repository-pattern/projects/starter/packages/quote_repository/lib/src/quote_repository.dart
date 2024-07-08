@@ -51,7 +51,36 @@ class QuoteRepository {
     String? favoritedByUsername,
     required QuoteListPageFetchPolicy fetchPolicy,
   }) async* {
-    throw UnimplementedError();
+    final isFilteringByTag = tag != null;
+    final isSearching = searchTerm.isNotEmpty;
+    final isFetchPolicyNetworkOnly =
+        fetchPolicy == QuoteListPageFetchPolicy.networkOnly;
+
+    //* 1: There are three situations in which you want to skip the cache lookup and
+    //* return data straight from the network: If the user has a tag selected, if they’re
+    //* searching or if the caller of the function explicitly specified the
+    //* networkOnly policy.
+    final shouldSkipCacheLookup =
+        isFilteringByTag || isSearching || isFetchPolicyNetworkOnly;
+
+    // Fetch QuoteListPage from the internet
+    if (shouldSkipCacheLookup) {
+      //! 2: This uses the function you created.
+      final freshPage = await _getQuoteListPageFromNetwork(
+        pageNumber,
+        tag: tag,
+        searchTerm: searchTerm,
+        favoritedByUsername: favoritedByUsername,
+      );
+
+      //! 3: The easiest way to generate a Stream in a Dart function is by adding
+      //! async* to the function’s header and then using the yield keyword
+      //! whenever you want to emit a new item.
+      //! You can take a deep dive on the subject name: Creating streams in Dart.
+      yield freshPage;
+    } else {
+      // TODO: Cover other fetch policies.
+    }
   }
 
   //* 1: Unlike getQuoteListPage() , this function can only emit one value — either
