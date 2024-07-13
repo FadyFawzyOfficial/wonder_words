@@ -26,9 +26,15 @@ class QuoteDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return QuoteDetailsView(
-      onAuthenticationError: onAuthenticationError,
-      shareableLinkGenerator: shareableLinkGenerator,
+    return BlocProvider(
+      create: (_) => QuoteDetailsCubit(
+        quoteId: quoteId,
+        quoteRepository: quoteRepository,
+      ),
+      child: QuoteDetailsView(
+        onAuthenticationError: onAuthenticationError,
+        shareableLinkGenerator: shareableLinkGenerator,
+      ),
     );
   }
 }
