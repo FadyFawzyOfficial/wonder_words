@@ -53,7 +53,33 @@ class QuoteDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StyledStatusBar.dark(
-      child: BlocBuilder<QuoteDetailsCubit, QuoteDetailsState>(
+      child: BlocConsumer<QuoteDetailsCubit, QuoteDetailsState>(
+        listener: (context, state) {
+          final quoteUpdateError =
+              state is QuoteDetailsSuccess ? state.quoteUpdateError : null;
+          if (quoteUpdateError != null) {
+            //? The biggest driver here is the fact that the user has to be signed in to vote or
+            //? favorite a quote in WonderWords. So, if the cause of the error is the user not
+            //? being signed in, you’re:
+            //! 1. Showing them a more specific snackbar.
+            final snackBar =
+                quoteUpdateError is UserAuthenticationRequiredException
+                    ? const AuthenticationRequiredErrorSnackBar()
+                    : const GenericErrorSnackBar();
+
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(snackBar);
+
+            //* 2. Sending them over to the sign-in screen. Actually, you’re just calling the
+            //* onAuthenticationError callback you received in the constructor; the main
+            //* application package will handle the actual navigation for you.
+            //* The purpose of that is to prevent feature packages from depending on one another.
+            if (quoteUpdateError is UserAuthenticationRequiredException) {
+              onAuthenticationError();
+            }
+          }
+        },
         builder: (context, state) => WillPopScope(
           onWillPop: () async {
             //* 1. The WillPopScope widget allows you to intercept when the user
