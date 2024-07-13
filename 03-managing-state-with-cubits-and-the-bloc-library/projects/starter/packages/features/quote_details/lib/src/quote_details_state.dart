@@ -22,18 +22,15 @@ class QuoteDetailsInProgress extends QuoteDetailsState {
 class QuoteDetailsSuccess extends QuoteDetailsState {
   //! 4. QuoteDetailsSuccess is the only class where having a quote property makes sense.
   final Quote quote;
-  // TODO: Add new property.
+  final dynamic quoteUpdateError;
 
   const QuoteDetailsSuccess({
     required this.quote,
-    // TODO: Receive new property.
+    this.quoteUpdateError,
   });
 
   @override
-  List<Object?> get props => [
-        quote,
-        // TODO: List new property.
-      ];
+  List<Object?> get props => [quote, quoteUpdateError];
 }
 
 class QuoteDetailsFailure extends QuoteDetailsState {

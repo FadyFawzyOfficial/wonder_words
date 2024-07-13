@@ -59,7 +59,30 @@ class QuoteDetailsCubit extends Cubit<QuoteDetailsState> {
   }
 
   void upvoteQuote() async {
-    // TODO: Add a body to upvoteQuote().
+    try {
+      final updatedQuote = await quoteRepository.upvoteQuote(quoteId);
+      emit(QuoteDetailsSuccess(quote: updatedQuote));
+    } catch (error) {
+      //* 1. The state property of a Cubit contains the last state you emitted. Here,
+      //* you’re assigning state to a local variable, so you’re able to leverage Dart’s
+      //* type promotion inside the if block below.
+      //! Type promotion just means Dart will automatically convert lastState ’s
+      //! type from QuoteDetailsState to QuoteDetailsSuccess if it passes that if condition.
+      //! You can learn more about why this only works with local variables in Dart’s documentation.
+      final lastState = state;
+      //! 2. You know for sure state will be a QuoteDetailsSuccess since the upvote
+      //! button doesn’t even appear in the other states.
+      if (lastState is QuoteDetailsSuccess) {
+        //! 3. You’re basically re-emitting the previous state, but now with an
+        //! error in the quoteUpdateError property.
+        emit(
+          QuoteDetailsSuccess(
+            quote: lastState.quote,
+            quoteUpdateError: error,
+          ),
+        );
+      }
+    }
   }
 
   void downvoteQuote() async {
