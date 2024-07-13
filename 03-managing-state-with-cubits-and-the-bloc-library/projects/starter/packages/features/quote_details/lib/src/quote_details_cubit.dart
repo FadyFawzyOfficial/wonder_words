@@ -49,7 +49,13 @@ class QuoteDetailsCubit extends Cubit<QuoteDetailsState> {
   }
 
   void refetch() async {
-    // TODO: Add a body to refetch().
+    //! 1. Reset your Cubit to its initial state, QuoteDetailsInProgress, so the
+    //! UI shows the progress indicator again.
+    emit(const QuoteDetailsInProgress());
+
+    //* 2. Recall the function you created in the previous to fetch the quote
+    //* form QuoteRepository
+    _fetchQuoteDetails();
   }
 
   void upvoteQuote() async {
