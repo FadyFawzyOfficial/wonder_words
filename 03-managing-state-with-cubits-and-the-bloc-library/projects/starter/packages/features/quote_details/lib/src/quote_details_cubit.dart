@@ -24,10 +24,28 @@ class QuoteDetailsCubit extends Cubit<QuoteDetailsState> {
           //* pass an instance olf your initial state to it. This value is what
           //* the Cubit will provide to the UI when the screen first opens.
           const QuoteDetailsInProgress(),
-        );
+        ) {
+    //! Notice you’re calling this _fetchQuoteDetails() from your constructor.
+    //! That will cause your Cubit to fetch this data as soon as you open the screen.
+    _fetchQuoteDetails();
+  }
 
   void _fetchQuoteDetails() async {
-    // TODO: Featch data from QuoteRepository.
+    //! Note: You didn’t have to emit() a QuoteDetailsInProgress at the beginning
+    //! of the function because you already defined it as your initial state
+    //! using the super constructor.
+    //* Fetch data from QuoteRepository.
+    try {
+      //* 1. Used the quoteId received in the constructor to fetch the entire Quote
+      //* object form QuoteRepository.
+      final quote = await quoteRepository.getQuoteDetails(quoteId);
+      //! 2. Called emit() form within a Cubit, which is how you send new state
+      //! objects to your widget layer. You'll learn how to react to those from
+      //! the UI side.
+      emit(QuoteDetailsSuccess(quote: quote));
+    } catch (error) {
+      emit(const QuoteDetailsFailure());
+    }
   }
 
   void refetch() async {
