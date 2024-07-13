@@ -47,7 +47,58 @@ class QuoteDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StyledStatusBar.dark(
-      child: Placeholder(),
+      child: BlocBuilder<QuoteDetailsCubit, QuoteDetailsState>(
+        builder: (context, state) => WillPopScope(
+          onWillPop: () async {
+            //* 1. The WillPopScope widget allows you to intercept when the user
+            //* tries to navigate bake form the screen. You're using that to send
+            //* the current quote back to the home screen if the current state is
+            //* a QuoteDetailsSuccess.
+            //! That's necessary so the previous screen can check whether the user
+            //! has favorited or unfavorited the quote and use that to also
+            //! reflect that accordingly. None of that has to do with BLoC
+            //! specifically; it's just how the app inter-screen communications
+            //! works. More on this in Chapter 7, "Routing & Navigating".
+            final displayedQuote =
+                state is QuoteDetailsSuccess ? state.quote : null;
+            Navigator.of(context).pop(displayedQuote);
+            return false;
+          },
+          child: Scaffold(
+            //! 2. Here, you're inspecting the state object to update the UI accordingly.
+            //! If the state is anything other than a success, you don't show the app bar.
+            appBar: state is QuoteDetailsSuccess
+                ? _QuoteActionsAppBar(
+                    quote: state.quote,
+                    shareableLinkGenerator: shareableLinkGenerator,
+                  )
+                : null,
+            body: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.all(WonderTheme.of(context).screenMargin),
+                //! 3. You're doing the same thing you did in the previous step,
+                //! but now for the bulk of the screen's content.
+                child: state is QuoteDetailsSuccess
+                    ? _Quote(quote: state.quote)
+                    : state is QuoteDetailsFailure
+                        ? ExceptionIndicator(
+                            onTryAgain: () {
+                              //! 4. BlocBuilder gives you that state object inside the builder , but it
+                              //! doesn’t give you the actual Cubit in case you want to call a function — send an
+                              //! event — on it. Using this context.read<YourCubitType>() is how you get the
+                              //! instance of your Cubit to call functions on it.
+                              final cubit = context.read<QuoteDetailsCubit>();
+                              cubit.refetch();
+                            },
+                          )
+                        //! 5. If the state is neither a QuoteDetailsSuccess nor a QuoteDetailsFailure ,
+                        //! you know for sure it’s a QuoteDetailsInProgress .
+                        : const CenteredCircularProgressIndicator(),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
