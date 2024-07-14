@@ -86,17 +86,70 @@ class QuoteDetailsCubit extends Cubit<QuoteDetailsState> {
   }
 
   void downvoteQuote() async {
-    // TODO: Challenge.
+    try {
+      final updatedQuote = await quoteRepository.downvoteQuote(quoteId);
+      emit(QuoteDetailsSuccess(quote: updatedQuote));
+    } catch (error) {
+      final lastState = state;
+      if (lastState is QuoteDetailsSuccess) {
+        emit(
+          QuoteDetailsSuccess(
+            quote: lastState.quote,
+            quoteUpdateError: error,
+          ),
+        );
+      }
+    }
   }
 
   void unvoteQuote() async {
-    // TODO: Challenge.
+    try {
+      final updatedQuote = await quoteRepository.unvoteQuote(quoteId);
+      emit(QuoteDetailsSuccess(quote: updatedQuote));
+    } catch (error) {
+      final lastState = state;
+      if (lastState is QuoteDetailsSuccess) {
+        emit(
+          QuoteDetailsSuccess(
+            quote: lastState.quote,
+            quoteUpdateError: error,
+          ),
+        );
+      }
+    }
   }
 
   void favoriteQuote() async {
-    // TODO: Challenge.
+    try {
+      final updatedQuote = await quoteRepository.favoriteQuote(quoteId);
+      emit(QuoteDetailsSuccess(quote: updatedQuote));
+    } catch (error) {
+      final lastState = state;
+      if (lastState is QuoteDetailsSuccess) {
+        emit(
+          QuoteDetailsSuccess(
+            quote: lastState.quote,
+            quoteUpdateError: error,
+          ),
+        );
+      }
+    }
   }
+
   void unfavoriteQuote() async {
-    // TODO: Challenge.
+    try {
+      final updatedQuote = await quoteRepository.unfavoriteQuote(quoteId);
+      emit(QuoteDetailsSuccess(quote: updatedQuote));
+    } catch (error) {
+      final lastState = state;
+      if (lastState is QuoteDetailsSuccess) {
+        emit(
+          QuoteDetailsSuccess(
+            quote: lastState.quote,
+            quoteUpdateError: error,
+          ),
+        );
+      }
+    }
   }
 }
