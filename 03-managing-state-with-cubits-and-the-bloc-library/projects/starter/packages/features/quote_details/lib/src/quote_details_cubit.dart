@@ -58,9 +58,24 @@ class QuoteDetailsCubit extends Cubit<QuoteDetailsState> {
     _fetchQuoteDetails();
   }
 
-  void upvoteQuote() async {
+  void upvoteQuote() => updateQuote(updateQuote: quoteRepository.upvoteQuote);
+
+  void downvoteQuote() =>
+      updateQuote(updateQuote: quoteRepository.downvoteQuote);
+
+  void unvoteQuote() => updateQuote(updateQuote: quoteRepository.unvoteQuote);
+
+  void favoriteQuote() =>
+      updateQuote(updateQuote: quoteRepository.favoriteQuote);
+
+  void unfavoriteQuote() =>
+      updateQuote(updateQuote: quoteRepository.unfavoriteQuote);
+
+  void updateQuote({
+    required Future<Quote> Function(int quoteId) updateQuote,
+  }) async {
     try {
-      final updatedQuote = await quoteRepository.upvoteQuote(quoteId);
+      final updatedQuote = await updateQuote(quoteId);
       emit(QuoteDetailsSuccess(quote: updatedQuote));
     } catch (error) {
       //* 1. The state property of a Cubit contains the last state you emitted. Here,
@@ -83,20 +98,5 @@ class QuoteDetailsCubit extends Cubit<QuoteDetailsState> {
         );
       }
     }
-  }
-
-  void downvoteQuote() async {
-    // TODO: Challenge.
-  }
-
-  void unvoteQuote() async {
-    // TODO: Challenge.
-  }
-
-  void favoriteQuote() async {
-    // TODO: Challenge.
-  }
-  void unfavoriteQuote() async {
-    // TODO: Challenge.
   }
 }
