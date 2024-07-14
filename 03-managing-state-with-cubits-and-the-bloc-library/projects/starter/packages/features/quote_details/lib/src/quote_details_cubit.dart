@@ -58,9 +58,24 @@ class QuoteDetailsCubit extends Cubit<QuoteDetailsState> {
     _fetchQuoteDetails();
   }
 
-  void upvoteQuote() async {
+  void upvoteQuote() => updateQuote(updateQuote: quoteRepository.upvoteQuote);
+
+  void downvoteQuote() =>
+      updateQuote(updateQuote: quoteRepository.downvoteQuote);
+
+  void unvoteQuote() => updateQuote(updateQuote: quoteRepository.unvoteQuote);
+
+  void favoriteQuote() =>
+      updateQuote(updateQuote: quoteRepository.favoriteQuote);
+
+  void unfavoriteQuote() =>
+      updateQuote(updateQuote: quoteRepository.unfavoriteQuote);
+
+  void updateQuote({
+    required Future<Quote> Function(int quoteId) updateQuote,
+  }) async {
     try {
-      final updatedQuote = await quoteRepository.upvoteQuote(quoteId);
+      final updatedQuote = await updateQuote(quoteId);
       emit(QuoteDetailsSuccess(quote: updatedQuote));
     } catch (error) {
       //* 1. The state property of a Cubit contains the last state you emitted. Here,
@@ -75,74 +90,6 @@ class QuoteDetailsCubit extends Cubit<QuoteDetailsState> {
       if (lastState is QuoteDetailsSuccess) {
         //! 3. You’re basically re-emitting the previous state, but now with an
         //! error in the quoteUpdateError property.
-        emit(
-          QuoteDetailsSuccess(
-            quote: lastState.quote,
-            quoteUpdateError: error,
-          ),
-        );
-      }
-    }
-  }
-
-  void downvoteQuote() async {
-    try {
-      final updatedQuote = await quoteRepository.downvoteQuote(quoteId);
-      emit(QuoteDetailsSuccess(quote: updatedQuote));
-    } catch (error) {
-      final lastState = state;
-      if (lastState is QuoteDetailsSuccess) {
-        emit(
-          QuoteDetailsSuccess(
-            quote: lastState.quote,
-            quoteUpdateError: error,
-          ),
-        );
-      }
-    }
-  }
-
-  void unvoteQuote() async {
-    try {
-      final updatedQuote = await quoteRepository.unvoteQuote(quoteId);
-      emit(QuoteDetailsSuccess(quote: updatedQuote));
-    } catch (error) {
-      final lastState = state;
-      if (lastState is QuoteDetailsSuccess) {
-        emit(
-          QuoteDetailsSuccess(
-            quote: lastState.quote,
-            quoteUpdateError: error,
-          ),
-        );
-      }
-    }
-  }
-
-  void favoriteQuote() async {
-    try {
-      final updatedQuote = await quoteRepository.favoriteQuote(quoteId);
-      emit(QuoteDetailsSuccess(quote: updatedQuote));
-    } catch (error) {
-      final lastState = state;
-      if (lastState is QuoteDetailsSuccess) {
-        emit(
-          QuoteDetailsSuccess(
-            quote: lastState.quote,
-            quoteUpdateError: error,
-          ),
-        );
-      }
-    }
-  }
-
-  void unfavoriteQuote() async {
-    try {
-      final updatedQuote = await quoteRepository.unfavoriteQuote(quoteId);
-      emit(QuoteDetailsSuccess(quote: updatedQuote));
-    } catch (error) {
-      final lastState = state;
-      if (lastState is QuoteDetailsSuccess) {
         emit(
           QuoteDetailsSuccess(
             quote: lastState.quote,
