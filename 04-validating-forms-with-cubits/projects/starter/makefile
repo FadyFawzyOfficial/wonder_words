@@ -18,6 +18,26 @@ pods-clean:
 	rm ios/Podfile ; \
 	rm ios/Podfile.lock ; \
 
+git-clean:
+	for feature in $(FEATURES); do \
+		cd $${feature} ; \
+		echo "Remove git cached folders & files in $${feature}" ; \
+		git rm -r --cached .dart_tool/ ; \
+		git rm -r --cached pubspec.lock ; \
+		git rm -r --cached .flutter-plugins ; \
+		git rm -r --cached .flutter-plugins-dependencies ; \
+		cd ../../../ ; \
+	done
+	for package in $(PACKAGES); do \
+		cd $${package} ; \
+		echo "Updating dependencies on $${package}" ; \
+		git rm -r --cached .dart_tool/ ; \
+		git rm -r --cached pubspec.lock ; \
+		git rm -r --cached .flutter-plugins ; \
+		git rm -r --cached .flutter-plugins-dependencies ; \
+		cd ../../ ; \
+	done
+
 
 get:
 	flutter pub get
