@@ -18,6 +18,26 @@ pods-clean:
 	rm ios/Podfile ; \
 	rm ios/Podfile.lock ; \
 
+git-clean:
+	for feature in $(FEATURES); do \
+		cd $${feature} ; \
+		echo "Remove git cached folders & files in $${feature}" ; \
+		git rm -r --cached .dart_tool/ ; \
+		git rm -r --cached pubspec.lock ; \
+		git rm -r --cached .flutter-plugins ; \
+		git rm -r --cached .flutter-plugins-dependencies ; \
+		cd ../../../ ; \
+	done
+	for package in $(PACKAGES); do \
+		cd $${package} ; \
+		echo "Updating dependencies on $${package}" ; \
+		git rm -r --cached .dart_tool/ ; \
+		git rm -r --cached pubspec.lock ; \
+		git rm -r --cached .flutter-plugins ; \
+		git rm -r --cached .flutter-plugins-dependencies ; \
+		cd ../../ ; \
+	done
+
 
 get:
 	flutter pub get
@@ -107,3 +127,42 @@ build-runner:
 		flutter pub run build_runner build --delete-conflicting-outputs ; \
 		cd ../../ ; \
 	done
+
+patch-for-current-flutter:
+	make patch-main
+	make patch-searchbar
+	make patch-package-intl
+	make patch-package-infinite-scroll
+    # make patch-monitoring
+	make patch-android-gradle
+	make patch-android-app-compile
+
+patch-main:
+	sed -i '' -e 's/late final _favQsApi/late final FavQsApi _favQsApi/' lib/main.dart
+	sed -i '' -e 's/late final _userRepository/late final UserRepository _userRepository/' lib/main.dart
+	sed -i '' -e 's/late final _routerDelegate/late final RoutemasterDelegate _routerDelegate/' lib/main.dart
+
+patch-searchbar:
+	sed -i '' -e 's/SearchBar/AppSearchBar/g' packages/component_library/lib/src/search_bar.dart
+	sed -i '' -e 's/child: SearchBar/child: AppSearchBar/' packages/features/quote_list/lib/src/quote_list_screen.dart
+
+patch-package-intl:
+	sed -i '' -e 's/intl: ^0.17.0/intl: ^0.18.1/' packages/component_library/pubspec.yaml
+	sed -i '' -e 's/intl: ^0.17.0/intl: ^0.18.1/' packages/features/profile_menu/pubspec.yaml
+
+patch-package-infinite-scroll:
+	sed -i '' -e 's/infinite_scroll_pagination: ^4.0.0-dev.1/infinite_scroll_pagination: ^4.0.0/' packages/features/quote_list/pubspec.yaml
+
+patch-monitoring:
+	sed -i '' -e 's/firebase_core: ^1.19.1/firebase_core: ^2.17.0/' packages/monitoring/pubspec.yaml
+	sed -i '' -e 's/firebase_crashlytics: ^2.8.4/firebase_crashlytics: ^3.3.7/' packages/monitoring/pubspec.yaml
+	sed -i '' -e 's/firebase_dynamic_links: ^4.3.1/firebase_dynamic_links: ^5.3.7/' packages/monitoring/pubspec.yaml
+	sed -i '' -e 's/firebase_analytics: ^9.1.12/firebase_analytics: ^10.5.1/' packages/monitoring/pubspec.yaml
+	sed -i '' -e 's/firebase_remote_config: ^2.0.11/firebase_remote_config: ^4.2.7/' packages/monitoring/pubspec.yaml
+
+patch-android-gradle:
+	sed -i '' -e "s/classpath 'com.android.tools.build:gradle:4.1.0'/classpath 'com.android.tools.build:gradle:7.4.1'/" android/build.gradle
+	sed -i '' -e "s/classpath 'com.google.gms:google-services:4.3.10'/classpath 'com.google.gms:google-services:4.3.14'/" android/build.gradle
+
+patch-android-app-compile:
+	sed -i '' -e 's/compileSdkVersion 31/compileSdkVersion 33/' android/app/build.gradle
