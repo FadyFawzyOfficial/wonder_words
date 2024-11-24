@@ -1,3 +1,4 @@
+import 'package:domain_models/domain_models.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_fields/form_fields.dart';
@@ -92,6 +93,66 @@ class SignInCubit extends Cubit<SignInState> {
   }
 
   void onSubmit() async {
-    // TODO: Handle the submit button's tap.
+    // 1. When the user taps the Sign In button, you want to validate the two fields no
+    // matter what — even if the user hasn’t touched the fields at all and tapping the
+    // button is their first action after opening the screen.
+    final email = Email.validated(state.email.value);
+    final password = Password.validated(state.password.value);
+
+    // 2. This is an alternative way of checking if all fields are valid. You could’ve used
+    // email.valid && password.valid instead, but the way you did it here scales
+    // better — it’s easier to add and remove fields.
+    final isFormValid = Formz.validate([email, password]).isValid;
+
+    // 3. You then create a new state for the screen using the updated fields. Emitting
+    // this new state in step five is what will cause any errors to show up in the TextField s.
+    final newState = state.copyWith(
+      email: email,
+      password: password,
+      // 4. If the form is valid, you’ll change the submissionStatus to
+      // SubmissionStatus.inProgress so you can use that information in your
+      // widgets to display a loading indicator.
+      submissionStatus: isFormValid ? SubmissionStatus.inProgress : null,
+    );
+
+    // 5. You’re emitting a new state even though you still have work left to do in this
+    // function. You’re doing this so your screen updates the fields and puts the
+    // loading indicator before you send the actual request to the server.
+    emit(newState);
+
+    // 1. Notice this if has no corresponding else statement. If the fields aren’t
+    // valid, you don’t need to do anything else. You’ve already emitted the new
+    // state from the code in the previous snippet, and at this point, the screen will
+    // already show the errors on the fields.
+    if (isFormValid) {
+      try {
+        // 2. Finally, if the values inserted by the user are valid, send them to the server.
+        await userRepository.signIn(email.value, password.value);
+
+        // 3. If your code gets to this line, it means the server returned a successful
+        // response. UserRepository will take care of storing the user information
+        // locally and refreshing the other screens for you — details in Chapter 6,
+        // “Authenticating Users”. All you have to do here is set your
+        // submissionStatus to SubmissionStatus.success so you can use that
+        // information in your widget shortly to close the screen.
+        final newState = state.copyWith(
+          submissionStatus: SubmissionStatus.success,
+        );
+
+        emit(newState);
+      } catch (error) {
+        final newState = state.copyWith(
+          // 4. On the other hand, if you get an error from the server, you change your
+          // submissionStatus to SubmissionStatus.invalidCredentialsError if the
+          // cause is missing their credentials or SubmissionStatus.genericError if the
+          // cause is anything else — lack of internet connectivity, for example.
+          submissionStatus: error is InvalidCredentialsException
+              ? SubmissionStatus.invalidCredentialsError
+              : SubmissionStatus.genericError,
+        );
+
+        emit(newState);
+      }
+    }
   }
 }
