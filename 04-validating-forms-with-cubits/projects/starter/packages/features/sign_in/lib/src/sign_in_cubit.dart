@@ -45,11 +45,50 @@ class SignInCubit extends Cubit<SignInState> {
   }
 
   void onPasswordChanged(String newValue) {
-    // TODO: Handle the user changing the value of the password field.
+    // 1. Grab your Cubit’s state property and assign it a more meaningful name
+    // within this function.
+    final previousScreenState = state;
+
+    // 2. Use the previousScreenState variable to retrieve the previous state of the
+    // password field.
+    final previousPasswordState = previousScreenState.password;
+
+    final shouldValidate = previousPasswordState.invalid;
+
+    // 3. Recreate the state of the password field using the newValue received in the
+    // function parameter.
+    //! You use the validated constructor to force the validation to kick in while
+    //! the user is still typing only if you were already showing a validation error for that field.
+    final newPasswordState = shouldValidate
+        ? Password.validated(newValue)
+        //! Otherwise, if the previous value in that field hasn’t been validated yet
+        //! or if it has been validated and considered valid
+        //! you’ll wait until the user takes the focus out of that field to validate it.
+        : Password.unvalidated(newValue);
+
+    // 1. Used the copyWith function from the beginning of the chapter to create a
+    // copy of the screen state, changing only the password property.
+    final newScreenState = state.copyWith(password: newPasswordState);
+
+    // 2. Emitted the new screen’s state.
+    emit(newScreenState);
   }
 
-  void onPasswordUnfocuesed() {
-    // TODO: Handle the user taking the focus out of the password field.
+  void onPasswordUnfocused() {
+    final previousScreenState = state;
+    final previousPasswordState = previousScreenState.password;
+
+    // 1. Grabbed the latest value of the password field.
+    final previousPasswordValue = previousPasswordState.value;
+
+    // 2. Recreated the state of the password field by using the validated
+    // constructor to force validation of the latest value.
+    final newPasswordState = Password.validated(previousPasswordValue);
+
+    // 3. Re-emitted the screen’s state with the new/validated password state.
+    final newScreenState =
+        previousScreenState.copyWith(password: newPasswordState);
+    emit(newScreenState);
   }
 
   void onSubmit() async {
