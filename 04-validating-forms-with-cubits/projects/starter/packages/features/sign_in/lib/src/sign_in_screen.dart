@@ -148,7 +148,8 @@ class _SignInFormState extends State<_SignInForm> {
       },
       builder: (context, state) {
         final emailError = state.email.invalid ? state.email.error : null;
-        // TODO: Check for errors in the password state.
+        final passwordError =
+            state.password.invalid ? state.password.error : null;
         const isSubmissionInProgress = false;
 
         final cubit = context.read<SignInCubit>();
@@ -186,7 +187,22 @@ class _SignInFormState extends State<_SignInForm> {
                 ),
                 enabled: !isSubmissionInProgress,
                 labelText: l10n.passwordTextFieldLabel,
-                // TODO: Display the password validation error if any.
+                // 1. You’re using the errorText property of the TextField class
+                // to display a validation error.
+                errorText: passwordError == null
+                    // 2. If passwordError is null , you set errorText to null , which
+                    // will cause your field to display as valid. passwordError is
+                    // the property you created in the last step.
+                    ? null
+                    // 3. Otherwise, if passwordError isn’t null , you return a different String
+                    // depending on whether the error is PasswordValidationError.empty or
+                    // PasswordValidationError.invalid.
+                    : (passwordError == PasswordValidationError.empty
+                        // 4. This l10n.whatever syntax is how you retrieve custom
+                        // internationalized messages in WonderWords.
+                        // You’ll learn all about this in Chapter 9, “Internationalizing & Localizing”.
+                        ? l10n.passwordTextFieldEmptyErrorMessage
+                        : l10n.passwordTextFieldInvalidErrorMessage),
               ),
             ),
             TextButton(
