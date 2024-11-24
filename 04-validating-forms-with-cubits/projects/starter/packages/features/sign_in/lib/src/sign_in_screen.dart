@@ -177,7 +177,7 @@ class _SignInFormState extends State<_SignInForm> {
             ),
             TextField(
               focusNode: _passwordFocusNode,
-              // TODO: Forward password change events to the Cubit.
+              onChanged: cubit.onPasswordChanged,
               obscureText: true,
               // TODO: Forward the onEditingComplete to the Cubit.
               decoration: InputDecoration(
