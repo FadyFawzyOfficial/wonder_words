@@ -97,7 +97,45 @@ class _SignInForm extends StatefulWidget {
 }
 
 class _SignInFormState extends State<_SignInForm> {
-  // TODO: Create the FocusNodes.
+  // 1. You created two FocusNode s: One for the email field and one for the
+  // password field. FocusNode s are objects you can attach to your TextField s
+  // to listen to and control a field’s focus.
+  final _emailFocusNode = FocusNode();
+  final _passwordFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // 2. This is how you get an instance of a Cubit to call functions on it.
+    // This context.read() call only works because the topmost widget in this file has
+    // a BlocProvider . Revisit the previous chapter if you need a refresher on all that.
+    final cubit = context.read<SignInCubit>();
+    _emailFocusNode.addListener(() {
+      // 3. You then added listeners to your FocusNode s. These listeners run every
+      // time the respective field gains or loses focus. Since you’re only interested in
+      // knowing when the focus is lost, you added this if statement to distinguish
+      // between the two events.
+      if (!_emailFocusNode.hasFocus) {
+        // 4. Within each listener’s code, you call the corresponding function you
+        // just implemented in your Cubit.
+        cubit.onEmailUnfocused();
+      }
+    });
+    _passwordFocusNode.addListener(() {
+      if (!_passwordFocusNode.hasFocus) {
+        cubit.onPasswordUnfocused();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // 5. You have to dispose of FocusNode s.
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,13 +149,13 @@ class _SignInFormState extends State<_SignInForm> {
       builder: (context, state) {
         final emailError = state.email.invalid ? state.email.error : null;
         // TODO: Check for errors in the password state.
-        final isSubmissionInProgress = false;
+        const isSubmissionInProgress = false;
 
         final cubit = context.read<SignInCubit>();
         return Column(
           children: <Widget>[
             TextField(
-              // TODO: Attach _emailFocusNode.
+              focusNode: _emailFocusNode,
               onChanged: cubit.onEmailChanged,
               textInputAction: TextInputAction.next,
               autocorrect: false,
@@ -138,7 +176,7 @@ class _SignInFormState extends State<_SignInForm> {
               height: Spacing.large,
             ),
             TextField(
-              // TODO: Attach _passwordFocusNode.
+              focusNode: _passwordFocusNode,
               // TODO: Forward password change events to the Cubit.
               obscureText: true,
               // TODO: Forward the onEditingComplete to the Cubit.
