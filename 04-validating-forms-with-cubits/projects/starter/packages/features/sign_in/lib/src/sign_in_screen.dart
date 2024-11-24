@@ -180,7 +180,7 @@ class _SignInFormState extends State<_SignInForm> {
               focusNode: _passwordFocusNode,
               onChanged: cubit.onPasswordChanged,
               obscureText: true,
-              // TODO: Forward the onEditingComplete to the Cubit.
+              onEditingComplete: cubit.onSubmit,
               decoration: InputDecoration(
                 suffixIcon: const Icon(
                   Icons.password,
@@ -220,7 +220,7 @@ class _SignInFormState extends State<_SignInForm> {
                     label: l10n.signInButtonLabel,
                   )
                 : ExpandedElevatedButton(
-                    // TODO: Forward the onTap event to the Cubit.
+                    onTap: cubit.onSubmit,
                     label: l10n.signInButtonLabel,
                     icon: const Icon(
                       Icons.login,
