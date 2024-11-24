@@ -144,13 +144,39 @@ class _SignInFormState extends State<_SignInForm> {
       listenWhen: (oldState, newState) =>
           oldState.submissionStatus != newState.submissionStatus,
       listener: (context, state) {
-        // TODO: Execute one-off actions based on state changes.
+        if (state.submissionStatus == SubmissionStatus.success) {
+          // 1. If the submission is a success, you call the onSignInSuccess callback you
+          // received in the screen’s constructor. Ultimately, that will lead to the main
+          // app package closing this screen and getting back to whatever screen opened
+          // it. The sign-in screen can open on a few different occasions, such as when a
+          // signed-out user tries to favorite a quote.
+          widget.onSignInSuccess();
+          return;
+        }
+
+        final hasSubmissionError = state.submissionStatus ==
+                SubmissionStatus.genericError ||
+            state.submissionStatus == SubmissionStatus.invalidCredentialsError;
+
+        // 2. Check if the current submissionStatus contains an error.
+        if (hasSubmissionError) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              // 3. If yes, display a different snackbar with a more descriptive message,
+              //  depending on what that error is.
+              state.submissionStatus == SubmissionStatus.invalidCredentialsError
+                  ? SnackBar(content: Text(l10n.invalidCredentialsErrorMessage))
+                  : const GenericErrorSnackBar(),
+            );
+        }
       },
       builder: (context, state) {
         final emailError = state.email.invalid ? state.email.error : null;
         final passwordError =
             state.password.invalid ? state.password.error : null;
-        const isSubmissionInProgress = false;
+        final isSubmissionInProgress =
+            state.submissionStatus == SubmissionStatus.inProgress;
 
         final cubit = context.read<SignInCubit>();
         return Column(
