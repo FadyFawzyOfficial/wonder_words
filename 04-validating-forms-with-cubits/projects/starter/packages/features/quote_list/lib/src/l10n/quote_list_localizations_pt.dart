@@ -1,6 +1,3 @@
-
-
-
 import 'quote_list_localizations.dart';
 
 /// The translations for Portuguese (`pt`).

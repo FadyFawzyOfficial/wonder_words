@@ -97,7 +97,45 @@ class _SignInForm extends StatefulWidget {
 }
 
 class _SignInFormState extends State<_SignInForm> {
-  // TODO: Create the FocusNodes.
+  // 1. You created two FocusNode s: One for the email field and one for the
+  // password field. FocusNode s are objects you can attach to your TextField s
+  // to listen to and control a field’s focus.
+  final _emailFocusNode = FocusNode();
+  final _passwordFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // 2. This is how you get an instance of a Cubit to call functions on it.
+    // This context.read() call only works because the topmost widget in this file has
+    // a BlocProvider . Revisit the previous chapter if you need a refresher on all that.
+    final cubit = context.read<SignInCubit>();
+    _emailFocusNode.addListener(() {
+      // 3. You then added listeners to your FocusNode s. These listeners run every
+      // time the respective field gains or loses focus. Since you’re only interested in
+      // knowing when the focus is lost, you added this if statement to distinguish
+      // between the two events.
+      if (!_emailFocusNode.hasFocus) {
+        // 4. Within each listener’s code, you call the corresponding function you
+        // just implemented in your Cubit.
+        cubit.onEmailUnfocused();
+      }
+    });
+    _passwordFocusNode.addListener(() {
+      if (!_passwordFocusNode.hasFocus) {
+        cubit.onPasswordUnfocused();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // 5. You have to dispose of FocusNode s.
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,18 +144,45 @@ class _SignInFormState extends State<_SignInForm> {
       listenWhen: (oldState, newState) =>
           oldState.submissionStatus != newState.submissionStatus,
       listener: (context, state) {
-        // TODO: Execute one-off actions based on state changes.
+        if (state.submissionStatus == SubmissionStatus.success) {
+          // 1. If the submission is a success, you call the onSignInSuccess callback you
+          // received in the screen’s constructor. Ultimately, that will lead to the main
+          // app package closing this screen and getting back to whatever screen opened
+          // it. The sign-in screen can open on a few different occasions, such as when a
+          // signed-out user tries to favorite a quote.
+          widget.onSignInSuccess();
+          return;
+        }
+
+        final hasSubmissionError = state.submissionStatus ==
+                SubmissionStatus.genericError ||
+            state.submissionStatus == SubmissionStatus.invalidCredentialsError;
+
+        // 2. Check if the current submissionStatus contains an error.
+        if (hasSubmissionError) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              // 3. If yes, display a different snackbar with a more descriptive message,
+              //  depending on what that error is.
+              state.submissionStatus == SubmissionStatus.invalidCredentialsError
+                  ? SnackBar(content: Text(l10n.invalidCredentialsErrorMessage))
+                  : const GenericErrorSnackBar(),
+            );
+        }
       },
       builder: (context, state) {
         final emailError = state.email.invalid ? state.email.error : null;
-        // TODO: Check for errors in the password state.
-        final isSubmissionInProgress = false;
+        final passwordError =
+            state.password.invalid ? state.password.error : null;
+        final isSubmissionInProgress =
+            state.submissionStatus == SubmissionStatus.inProgress;
 
         final cubit = context.read<SignInCubit>();
         return Column(
           children: <Widget>[
             TextField(
-              // TODO: Attach _emailFocusNode.
+              focusNode: _emailFocusNode,
               onChanged: cubit.onEmailChanged,
               textInputAction: TextInputAction.next,
               autocorrect: false,
@@ -138,17 +203,32 @@ class _SignInFormState extends State<_SignInForm> {
               height: Spacing.large,
             ),
             TextField(
-              // TODO: Attach _passwordFocusNode.
-              // TODO: Forward password change events to the Cubit.
+              focusNode: _passwordFocusNode,
+              onChanged: cubit.onPasswordChanged,
               obscureText: true,
-              // TODO: Forward the onEditingComplete to the Cubit.
+              onEditingComplete: cubit.onSubmit,
               decoration: InputDecoration(
                 suffixIcon: const Icon(
                   Icons.password,
                 ),
                 enabled: !isSubmissionInProgress,
                 labelText: l10n.passwordTextFieldLabel,
-                // TODO: Display the password validation error if any.
+                // 1. You’re using the errorText property of the TextField class
+                // to display a validation error.
+                errorText: passwordError == null
+                    // 2. If passwordError is null , you set errorText to null , which
+                    // will cause your field to display as valid. passwordError is
+                    // the property you created in the last step.
+                    ? null
+                    // 3. Otherwise, if passwordError isn’t null , you return a different String
+                    // depending on whether the error is PasswordValidationError.empty or
+                    // PasswordValidationError.invalid.
+                    : (passwordError == PasswordValidationError.empty
+                        // 4. This l10n.whatever syntax is how you retrieve custom
+                        // internationalized messages in WonderWords.
+                        // You’ll learn all about this in Chapter 9, “Internationalizing & Localizing”.
+                        ? l10n.passwordTextFieldEmptyErrorMessage
+                        : l10n.passwordTextFieldInvalidErrorMessage),
               ),
             ),
             TextButton(
@@ -166,7 +246,7 @@ class _SignInFormState extends State<_SignInForm> {
                     label: l10n.signInButtonLabel,
                   )
                 : ExpandedElevatedButton(
-                    // TODO: Forward the onTap event to the Cubit.
+                    onTap: cubit.onSubmit,
                     label: l10n.signInButtonLabel,
                     icon: const Icon(
                       Icons.login,
