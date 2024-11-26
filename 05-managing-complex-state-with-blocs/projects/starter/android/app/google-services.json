@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "524605828268",
+    "project_id": "fady-worder-words",
+    "storage_bucket": "fady-worder-words.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:524605828268:android:84dac5da750bd00614c309",
+        "android_client_info": {
+          "package_name": "com.raywenderlich.wonder_words"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgvc8HRxF_Ktm4G2ktMG-9-sKmgoytI7U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
