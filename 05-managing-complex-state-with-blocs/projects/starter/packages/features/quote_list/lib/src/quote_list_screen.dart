@@ -149,7 +149,8 @@ class _QuoteListViewState extends State<QuoteListView> {
                   Expanded(
                     child: RefreshIndicator(
                       onRefresh: () {
-                        // TODO: Forward pull-to-refresh gestures to the Bloc.
+                        // Completed: Forward pull-to-refresh gestures to the Bloc.
+                        _bloc.add(const QuoteListRefreshed());
 
                         // Returning a Future inside `onRefresh` enables the loading
                         // indicator to disappear automatically once the refresh is
