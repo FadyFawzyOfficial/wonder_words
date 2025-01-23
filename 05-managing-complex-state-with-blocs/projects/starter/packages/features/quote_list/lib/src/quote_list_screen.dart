@@ -75,7 +75,13 @@ class _QuoteListViewState extends State<QuoteListView> {
 
   @override
   void initState() {
-    // TODO: Forward subsequent page requests to the Bloc.
+    // Completed: Forward subsequent page requests to the Bloc.
+    _pagingController.addPageRequestListener((pageNumber) {
+      final isSubsequentPage = pageNumber > 1;
+      if (isSubsequentPage) {
+        _bloc.add(QuoteListNextPageRequested(pageNumber: pageNumber));
+      }
+    });
 
     // TODO: Forward changes in the search bar to the Bloc.
 
