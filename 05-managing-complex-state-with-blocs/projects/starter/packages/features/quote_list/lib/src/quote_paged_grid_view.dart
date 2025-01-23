@@ -40,9 +40,10 @@ class QuotePagedGridView extends StatelessWidget {
               isFavorite: isFavorite,
               top: const OpeningQuoteSvgAsset(),
               bottom: const ClosingQuoteSvgAsset(),
-              onFavorite: () {
-                // TODO: Forward taps on the favorite button.
-              },
+              // Completed: Forward taps on the favorite button.
+              onFavorite: () => bloc.add(isFavorite
+                  ? QuoteListItemUnfavorited(quote.id)
+                  : QuoteListItemFavorited(quote.id)),
               onTap: onQuoteSelected != null
                   ? () async {
                       // TODO: Open the details screen and notify the Bloc if the user modified the quote in there.
