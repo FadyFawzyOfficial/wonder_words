@@ -83,7 +83,13 @@ class _QuoteListViewState extends State<QuoteListView> {
       }
     });
 
-    // TODO: Forward changes in the search bar to the Bloc.
+    // Completed: Forward changes in the search bar to the Bloc.
+    //* This _searchBarController property holds a regular TextEditingController
+    //* you attached to the screen’s search bar. In the code above, you add a listener to
+    //* it so you can notify your Bloc of any changes to the TextField ’s value.
+    _searchBarController.addListener(() {
+      _bloc.add(QuoteListSearchTermChanged(_searchBarController.text));
+    });
 
     super.initState();
   }
