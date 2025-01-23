@@ -65,9 +65,8 @@ class QuotePagedGridView extends StatelessWidget {
           },
           firstPageErrorIndicatorBuilder: (context) {
             return ExceptionIndicator(
-              onTryAgain: () {
-                // TODO: Request the first page again.
-              },
+              // Completed: Request the first page again.
+              onTryAgain: () => bloc.add(const QuoteListFailedFetchRetried()),
             );
           },
         ),
