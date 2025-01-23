@@ -46,7 +46,19 @@ class QuotePagedGridView extends StatelessWidget {
                   : QuoteListItemFavorited(quote.id)),
               onTap: onQuoteSelected != null
                   ? () async {
-                      // TODO: Open the details screen and notify the Bloc if the user modified the quote in there.
+                      // Completed: Open the details screen and notify the Bloc if the user modified the quote in there.
+                      //* 1.Call the onQuoteSelected callback this widget received on its constructor. If
+                      //* you trace back that callback’s origin, you’ll find its declaration in the main
+                      //* application package. What it does is simply open the quote details screen and
+                      //* then return the updated quote object to you when the user closes that screen.
+                      final updatedQuote = await onQuoteSelected(quote.id);
+                      // 2. Check if the user has favorited or unfavorited the quote while in the details screen.
+                      if (updatedQuote != null &&
+                          updatedQuote.isFavorite != quote.isFavorite) {
+                        //! 3. If the user did change the quote’s favorite status, send the updated quote
+                        //! object to the Bloc so it can replace the old one currently on screen.
+                        bloc.add(QuoteListItemUpdated(updatedQuote));
+                      }
                     }
                   : null,
             );
