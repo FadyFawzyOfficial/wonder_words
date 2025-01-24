@@ -12,22 +12,33 @@ part 'quote_list_event.dart';
 
 part 'quote_list_state.dart';
 
+// 1. This QuoteListBloc class extends Bloc and specifies two generic types:
+// the event class, QuoteListEvent , and the state class, QuoteListState.
 class QuoteListBloc extends Bloc<QuoteListEvent, QuoteListState> {
   QuoteListBloc({
     required QuoteRepository quoteRepository,
     required UserRepository userRepository,
-  })  : _quoteRepository = quoteRepository,
-        super(
-          const QuoteListState(),
-        ) {
+  })  :
+        // 2. QuoteListBloc ‘s constructor then receives two repositories and assigns
+        // one of them to the _quoteRepository property.
+        //* You didn’t have to assign userRepository to a property of the
+        //* QuoteListBloc class — as you did for quoteRepository —
+        //! because you’ll only use it inside the constructor’s code.
+        _quoteRepository = quoteRepository,
+        // 3. You then call the super constructor and pass it to your initial state, which is
+        // just a QuoteListState instantiated with all the default values.
+        super(const QuoteListState()) {
+    // 4. Here, you’re calling a function you’ll implement later to handle all your events.
     _registerEventHandler();
 
     // TODO: Watch the user's authentication status.
   }
 
+  // 5. You’ll learn all about these _authChangesSubscription and
+  // _authenticatedUsername properties in a moment.
   late final StreamSubscription _authChangesSubscription;
   String? _authenticatedUsername;
-  
+
   final QuoteRepository _quoteRepository;
 
   void _registerEventHandler() {
