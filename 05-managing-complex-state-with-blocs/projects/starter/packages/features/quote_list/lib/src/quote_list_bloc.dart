@@ -275,7 +275,31 @@ class QuoteListBloc extends Bloc<QuoteListEvent, QuoteListState> {
     );
   }
 
-  // TODO: Create a utility function that fetches a given page.
+  // Completed: Create a utility function that fetches a given page.
+  Stream<QuoteListState> _fetchQuotePage(
+    int page, {
+    required QuoteListPageFetchPolicy fetchPolicy,
+    bool isRefresh = false,
+  }) async* {
+    //* 1. Retrieve the currently applied filter, which can be either a search filter,
+    //* favorites filter or tag filter.
+    final currentlyAppliedFilter = state.filter;
+
+    // 2. Check if the user is currently filtering by favorites.
+    final isFilteringByFavorites =
+        currentlyAppliedFilter is QuoteListFilterByFavorites;
+
+    // Check if the user is signed in.
+    final isUserSignedIn = _authenticatedUsername != null;
+
+    if (isFilteringByFavorites && !isUserSignedIn) {
+      //* 4. Use the yield keyword to emit a new state to the new Stream you’re
+      //* generating within this function.
+      yield QuoteListState.noItemsFound(filter: currentlyAppliedFilter);
+    } else {
+      // TODO: Fetch the Page.
+    }
+  }
 
   // Completed: Dispose the auth changes subscription.
   //? Here, you’re just overriding your Bloc’s close() function to insert the code
