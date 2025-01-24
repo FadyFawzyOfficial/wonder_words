@@ -277,5 +277,13 @@ class QuoteListBloc extends Bloc<QuoteListEvent, QuoteListState> {
 
   // TODO: Create a utility function that fetches a given page.
 
-  // TODO: Dispose the auth changes subscription.
+  // Completed: Dispose the auth changes subscription.
+  //? Here, you’re just overriding your Bloc’s close() function to insert the code
+  //? that cancels your subscription. This ensures your subscription won’t remain
+  //? active after the user closes the screen.
+  @override
+  Future<void> close() {
+    _authChangesSubscription.cancel();
+    return super.close();
+  }
 }
