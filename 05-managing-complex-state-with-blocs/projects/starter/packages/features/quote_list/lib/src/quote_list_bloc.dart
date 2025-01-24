@@ -342,7 +342,32 @@ class QuoteListBloc extends Bloc<QuoteListEvent, QuoteListState> {
           );
         }
       } catch (error) {
-        // ToDo: Handle errors.
+        //! You also have to be prepared for the case in which you can’t get that new page
+        //! for some reason. For example, the user might not have an internet connection.
+        // Completed: Handle errors.
+        if (error is EmptySearchResultException) {
+          //! 1. If the error is an EmptySearchResultException , you’ll treat it differently.
+          //! Instead of emitting an “error” state, which would cause the UI to show a Try
+          //! Again button, you’ll emit an `empty state`, which will show the user a more
+          //! descriptive message saying you couldn’t find any items for the current filters.
+          //! It’s the same state you use when a signed out user tries to filter by favorites.
+          yield QuoteListState.noItemsFound(filter: currentlyAppliedFilter);
+        }
+
+        if (isRefresh) {
+          //* 2. You’ll also emit a different state if this error occurred during a refresh request.
+          //! When the user intentionally asks for a refresh, it means they already
+          //! have some items on the screen, so there’s no reason for you to hide those
+          //! items and show a full-screen error widget. In that case, the best thing to do is
+          //! notify them of the error with a snackbar.
+          yield state.copyWithNewRefreshError(error);
+        } else {
+          //! 3. Finally, if this is an unexpected error, just re-emit the current state with an
+          //! error added to it. The UI will take care of showing a full-screen error widget if
+          //! the user is trying to fetch the first page. Otherwise, it will append an error
+          //! item to the grid if this is a subsequent page request.
+          yield state.copyWithNewError(error);
+        }
       }
     }
   }
