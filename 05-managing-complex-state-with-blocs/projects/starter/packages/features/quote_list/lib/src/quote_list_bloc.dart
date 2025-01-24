@@ -275,7 +275,102 @@ class QuoteListBloc extends Bloc<QuoteListEvent, QuoteListState> {
     );
   }
 
-  // TODO: Create a utility function that fetches a given page.
+  // Completed: Create a utility function that fetches a given page.
+  Stream<QuoteListState> _fetchQuotePage(
+    int page, {
+    required QuoteListPageFetchPolicy fetchPolicy,
+    bool isRefresh = false,
+  }) async* {
+    //* 1. Retrieve the currently applied filter, which can be either a search filter,
+    //* favorites filter or tag filter.
+    final currentlyAppliedFilter = state.filter;
+
+    // 2. Check if the user is currently filtering by favorites.
+    final isFilteringByFavorites =
+        currentlyAppliedFilter is QuoteListFilterByFavorites;
+
+    // Check if the user is signed in.
+    final isUserSignedIn = _authenticatedUsername != null;
+
+    if (isFilteringByFavorites && !isUserSignedIn) {
+      //* 4. Use the yield keyword to emit a new state to the new Stream you’re
+      //* generating within this function.
+      yield QuoteListState.noItemsFound(filter: currentlyAppliedFilter);
+    } else {
+      // Completed: Fetch the Page.
+      final pageStream = _quoteRepository.getQuoteListPage(
+        page,
+        fetchPolicy: fetchPolicy,
+        tag: currentlyAppliedFilter is QuoteListFilterByTag
+            ? currentlyAppliedFilter.tag
+            : null,
+        searchTerm: currentlyAppliedFilter is QuoteListFilterBySearchTerm
+            ? currentlyAppliedFilter.searchTerm
+            : '',
+        favoritedByUsername:
+            currentlyAppliedFilter is QuoteListFilterByFavorites
+                ? _authenticatedUsername
+                : null,
+      );
+
+      try {
+        // 1. Listen to the Stream you got from the repository by using this await for syntax.
+        //? What it does is run the code inside the for block every time your
+        //? pageStream emits a new item.
+        //! The only time it actually emits more than one item, though,
+        //! is when you build the Stream using the QuoteListPageFetchPolicy.cacheAndNetwork
+        //! fetch policy, which you’ll do when the user first opens the screen.
+        await for (final newPage in pageStream) {
+          final newItemList = newPage.quoteList;
+          final oldItemList = state.itemList ?? [];
+
+          //* 2. Then, for every new page you get, you append the new items to the old ones
+          //* you already have on the screen. This is assuming the user isn’t trying to
+          //* refresh the data, in which case you’ll instead replace the previous items.
+          final completedItemList = isRefresh || page == 1
+              ? newItemList
+              : (oldItemList + newItemList);
+
+          final nextPage = newPage.isLastPage ? null : page + 1;
+
+          // 3. yield a new QuoteListState containing all the new data you got from the repository.
+          yield QuoteListState.success(
+            nextPage: nextPage,
+            itemList: completedItemList,
+            filter: currentlyAppliedFilter,
+            isRefresh: isRefresh,
+          );
+        }
+      } catch (error) {
+        //! You also have to be prepared for the case in which you can’t get that new page
+        //! for some reason. For example, the user might not have an internet connection.
+        // Completed: Handle errors.
+        if (error is EmptySearchResultException) {
+          //! 1. If the error is an EmptySearchResultException , you’ll treat it differently.
+          //! Instead of emitting an “error” state, which would cause the UI to show a Try
+          //! Again button, you’ll emit an `empty state`, which will show the user a more
+          //! descriptive message saying you couldn’t find any items for the current filters.
+          //! It’s the same state you use when a signed out user tries to filter by favorites.
+          yield QuoteListState.noItemsFound(filter: currentlyAppliedFilter);
+        }
+
+        if (isRefresh) {
+          //* 2. You’ll also emit a different state if this error occurred during a refresh request.
+          //! When the user intentionally asks for a refresh, it means they already
+          //! have some items on the screen, so there’s no reason for you to hide those
+          //! items and show a full-screen error widget. In that case, the best thing to do is
+          //! notify them of the error with a snackbar.
+          yield state.copyWithNewRefreshError(error);
+        } else {
+          //! 3. Finally, if this is an unexpected error, just re-emit the current state with an
+          //! error added to it. The UI will take care of showing a full-screen error widget if
+          //! the user is trying to fetch the first page. Otherwise, it will append an error
+          //! item to the grid if this is a subsequent page request.
+          yield state.copyWithNewError(error);
+        }
+      }
+    }
+  }
 
   // Completed: Dispose the auth changes subscription.
   //? Here, you’re just overriding your Bloc’s close() function to insert the code
