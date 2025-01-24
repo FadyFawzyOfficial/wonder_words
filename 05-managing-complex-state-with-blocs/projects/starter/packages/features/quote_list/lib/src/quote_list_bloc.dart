@@ -297,7 +297,53 @@ class QuoteListBloc extends Bloc<QuoteListEvent, QuoteListState> {
       //* generating within this function.
       yield QuoteListState.noItemsFound(filter: currentlyAppliedFilter);
     } else {
-      // TODO: Fetch the Page.
+      // Completed: Fetch the Page.
+      final pageStream = _quoteRepository.getQuoteListPage(
+        page,
+        fetchPolicy: fetchPolicy,
+        tag: currentlyAppliedFilter is QuoteListFilterByTag
+            ? currentlyAppliedFilter.tag
+            : null,
+        searchTerm: currentlyAppliedFilter is QuoteListFilterBySearchTerm
+            ? currentlyAppliedFilter.searchTerm
+            : '',
+        favoritedByUsername:
+            currentlyAppliedFilter is QuoteListFilterByFavorites
+                ? _authenticatedUsername
+                : null,
+      );
+
+      try {
+        // 1. Listen to the Stream you got from the repository by using this await for syntax.
+        //? What it does is run the code inside the for block every time your
+        //? pageStream emits a new item.
+        //! The only time it actually emits more than one item, though,
+        //! is when you build the Stream using the QuoteListPageFetchPolicy.cacheAndNetwork
+        //! fetch policy, which you’ll do when the user first opens the screen.
+        await for (final newPage in pageStream) {
+          final newItemList = newPage.quoteList;
+          final oldItemList = state.itemList ?? [];
+
+          //* 2. Then, for every new page you get, you append the new items to the old ones
+          //* you already have on the screen. This is assuming the user isn’t trying to
+          //* refresh the data, in which case you’ll instead replace the previous items.
+          final completedItemList = isRefresh || page == 1
+              ? newItemList
+              : (oldItemList + newItemList);
+
+          final nextPage = newPage.isLastPage ? null : page + 1;
+
+          // 3. yield a new QuoteListState containing all the new data you got from the repository.
+          yield QuoteListState.success(
+            nextPage: nextPage,
+            itemList: completedItemList,
+            filter: currentlyAppliedFilter,
+            isRefresh: isRefresh,
+          );
+        }
+      } catch (error) {
+        // ToDo: Handle errors.
+      }
     }
   }
 
