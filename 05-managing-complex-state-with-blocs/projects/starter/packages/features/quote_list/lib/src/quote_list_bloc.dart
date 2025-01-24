@@ -31,7 +31,31 @@ class QuoteListBloc extends Bloc<QuoteListEvent, QuoteListState> {
     // 4. Here, you’re calling a function you’ll implement later to handle all your events.
     _registerEventHandler();
 
-    // TODO: Watch the user's authentication status.
+    // Completed: Watch the user's authentication status.
+
+    _authChangesSubscription = userRepository
+        //* 1. UserRepository has a getUser() function that returns a Stream<User?> .
+        //* That Stream is useful for monitoring changes in the user’s authentication
+        //* status. When the user signs in, a new User object comes down that
+        //* Stream . When they sign out, you get a null value instead.
+        .getUser()
+        //* 2. You then subscribe to that Stream using the listen() function. The
+        //* listen() function returns an object, called the subscription.
+        //! You store the  subscription object in the _authChangesSubscription
+        //! property, so you can dispose of it later.
+        .listen(
+      (user) {
+        // 3. Every time you get a new value from that Stream , you store the new
+        // username inside the _authenticatedUsername property. This allows you to
+        // read that value from other parts of your Bloc’s code.
+        _authenticatedUsername = user?.username;
+
+        // 4. This is a bit different from what you did before… Here, you’re adding an event
+        // to the Bloc from inside the Bloc itself — so far, you’ve only used this add()
+        // function from the widgets’ side.
+        add(const QuoteListUsernameObtained());
+      },
+    );
   }
 
   // 5. You’ll learn all about these _authChangesSubscription and
