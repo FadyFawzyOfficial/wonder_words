@@ -10,7 +10,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
-  flutter_svg: ^0.22.0
+  flutter_svg: ^2.0.17
   auto_size_text: ^3.0.0-nullsafety.0
 
 dev_dependencies:
