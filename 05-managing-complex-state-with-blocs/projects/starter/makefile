@@ -132,6 +132,7 @@ patch-for-current-flutter:
 	make patch-main
 	make patch-searchbar
 	make patch-package-intl
+	make patch-package-share-plus
 	make patch-package-infinite-scroll
     # make patch-monitoring
 	make patch-android-gradle
@@ -149,6 +150,9 @@ patch-searchbar:
 patch-package-intl:
 	sed -i '' -e 's/intl: ^0.17.0/intl: any/' packages/component_library/pubspec.yaml
 	sed -i '' -e 's/intl: ^0.17.0/intl: any/' packages/features/profile_menu/pubspec.yaml
+
+patch-package-share-plus:
+	sed -i '' -e 's/share_plus: ^4.0.10/share_plus: ^10.1.4/' packages/features/quote_details/pubspec.yaml
 
 patch-package-infinite-scroll:
 	sed -i '' -e 's/infinite_scroll_pagination: ^4.0.0-dev.1/infinite_scroll_pagination: ^4.0.0/' packages/features/quote_list/pubspec.yaml
