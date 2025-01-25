@@ -147,8 +147,8 @@ patch-searchbar:
 	sed -i '' -e 's/child: SearchBar/child: AppSearchBar/' packages/features/quote_list/lib/src/quote_list_screen.dart
 
 patch-package-intl:
-	sed -i '' -e 's/intl: ^0.17.0/intl: ^0.18.1/' packages/component_library/pubspec.yaml
-	sed -i '' -e 's/intl: ^0.17.0/intl: ^0.18.1/' packages/features/profile_menu/pubspec.yaml
+	sed -i '' -e 's/intl: ^0.17.0/intl: any/' packages/component_library/pubspec.yaml
+	sed -i '' -e 's/intl: ^0.17.0/intl: any/' packages/features/profile_menu/pubspec.yaml
 
 patch-package-infinite-scroll:
 	sed -i '' -e 's/infinite_scroll_pagination: ^4.0.0-dev.1/infinite_scroll_pagination: ^4.0.0/' packages/features/quote_list/pubspec.yaml
