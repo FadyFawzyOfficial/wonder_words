@@ -134,6 +134,7 @@ patch-for-current-flutter:
 	make patch-package-intl
 	make patch-package-share-plus
 	patch-package-svg
+	patch-package-secure-storage
 	make patch-package-infinite-scroll
     # make patch-monitoring
 	make patch-android-gradle
@@ -157,6 +158,9 @@ patch-package-share-plus:
 
 patch-package-svg:
 	sed -i '' -e 's/flutter_svg: ^0.22.0/flutter_svg: ^2.0.17/' packages/component_library/pubspec.yaml
+
+patch-package-secure-storage:
+	sed -i '' -e 's/flutter_secure_storage: ^4.2.0/flutter_secure_storage: ^9.2.4/' packages/user_repository/pubspec.yaml
 
 patch-package-infinite-scroll:
 	sed -i '' -e 's/infinite_scroll_pagination: ^4.0.0-dev.1/infinite_scroll_pagination: ^4.0.0/' packages/features/quote_list/pubspec.yaml
