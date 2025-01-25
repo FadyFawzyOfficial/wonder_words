@@ -162,11 +162,11 @@ patch-package-infinite-scroll:
 	sed -i '' -e 's/infinite_scroll_pagination: ^4.0.0-dev.1/infinite_scroll_pagination: ^4.0.0/' packages/features/quote_list/pubspec.yaml
 
 patch-monitoring:
-	sed -i '' -e 's/firebase_core: ^1.19.1/firebase_core: ^2.17.0/' packages/monitoring/pubspec.yaml
-	sed -i '' -e 's/firebase_crashlytics: ^2.8.4/firebase_crashlytics: ^3.3.7/' packages/monitoring/pubspec.yaml
-	sed -i '' -e 's/firebase_dynamic_links: ^4.3.1/firebase_dynamic_links: ^5.3.7/' packages/monitoring/pubspec.yaml
-	sed -i '' -e 's/firebase_analytics: ^9.1.12/firebase_analytics: ^10.5.1/' packages/monitoring/pubspec.yaml
-	sed -i '' -e 's/firebase_remote_config: ^2.0.11/firebase_remote_config: ^4.2.7/' packages/monitoring/pubspec.yaml
+	sed -i '' -e 's/firebase_core: ^1.19.1/firebase_core: ^3.10.1/' packages/monitoring/pubspec.yaml
+	sed -i '' -e 's/firebase_crashlytics: ^2.8.4/firebase_crashlytics: ^4.3.1/' packages/monitoring/pubspec.yaml
+	sed -i '' -e 's/firebase_dynamic_links: ^4.3.1/firebase_dynamic_links: ^6.1.1/' packages/monitoring/pubspec.yaml
+	sed -i '' -e 's/firebase_analytics: ^9.1.12/firebase_analytics: ^11.4.1/' packages/monitoring/pubspec.yaml
+	sed -i '' -e 's/firebase_remote_config: ^2.0.11/firebase_remote_config: ^5.3.1/' packages/monitoring/pubspec.yaml
 
 patch-android-gradle:
 	sed -i '' -e "s/classpath 'com.android.tools.build:gradle:4.1.0'/classpath 'com.android.tools.build:gradle:7.4.1'/" android/build.gradle
