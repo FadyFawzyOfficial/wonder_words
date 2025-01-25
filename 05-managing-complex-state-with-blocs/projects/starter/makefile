@@ -147,6 +147,7 @@ patch-main:
 
 patch-searchbar:
 	sed -i '' -e 's/SearchBar/AppSearchBar/g' packages/component_library/lib/src/search_bar.dart
+	sed -i '' -e 's/SearchBar/AppSearchBar/g' integration_test/app_test.dart
 	sed -i '' -e 's/child: SearchBar/child: AppSearchBar/' packages/features/quote_list/lib/src/quote_list_screen.dart
 
 patch-package-intl:
