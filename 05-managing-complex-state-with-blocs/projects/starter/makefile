@@ -133,8 +133,8 @@ patch-for-current-flutter:
 	make patch-searchbar
 	make patch-package-intl
 	make patch-package-share-plus
-	patch-package-svg
-	patch-package-secure-storage
+	make patch-package-svg
+	make patch-package-secure-storage
 	make patch-package-infinite-scroll
     # make patch-monitoring
 	make patch-android-gradle
