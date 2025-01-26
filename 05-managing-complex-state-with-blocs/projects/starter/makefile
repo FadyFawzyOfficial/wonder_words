@@ -184,4 +184,5 @@ patch-android-gradle:
 	sed -i '' -e 's/google-services:4.3.10/google-services:4.3.14/' android/build.gradle
 
 patch-android-app-compile:
-	sed -i '' -e 's/compileSdkVersion 31/compileSdkVersion 33/' android/app/build.gradle
+	sed -i '' -e 's/compileSdkVersion 31/compileSdkVersion flutter.compileSdkVersion/' android/app/build.gradle
+	sed -i '' -e 's/targetSdkVersion 30/targetSdkVersion flutter.targetSdkVersion/' android/app/build.gradle
