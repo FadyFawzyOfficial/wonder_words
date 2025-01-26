@@ -1,5 +1,7 @@
 import 'forgot_my_password_localizations.dart';
 
+// ignore_for_file: type=lint
+
 /// The translations for Portuguese (`pt`).
 class ForgotMyPasswordLocalizationsPt extends ForgotMyPasswordLocalizations {
   ForgotMyPasswordLocalizationsPt([String locale = 'pt']) : super(locale);
