@@ -179,8 +179,9 @@ patch-gradle:
 	sed -i '' -e 's/gradle-7.4-all.zip/gradle-8.3-all.zip/' packages/component_library/example/android/gradle/wrapper/gradle-wrapper.properties
 
 patch-android-gradle:
-	sed -i '' -e "s/classpath 'com.android.tools.build:gradle:4.1.0'/classpath 'com.android.tools.build:gradle:7.4.1'/" android/build.gradle
-	sed -i '' -e "s/classpath 'com.google.gms:google-services:4.3.10'/classpath 'com.google.gms:google-services:4.3.14'/" android/build.gradle
+	sed -i '' -e 's/gradle:4.1.0/gradle:8.2.1/' android/build.gradle
+	sed -i '' -e 's/gradle:7.2.1/gradle:8.2.1/' packages/component_library/example/android/build.gradle
+	sed -i '' -e 's/google-services:4.3.10/google-services:4.3.14/' android/build.gradle
 
 patch-android-app-compile:
 	sed -i '' -e 's/compileSdkVersion 31/compileSdkVersion 33/' android/app/build.gradle
