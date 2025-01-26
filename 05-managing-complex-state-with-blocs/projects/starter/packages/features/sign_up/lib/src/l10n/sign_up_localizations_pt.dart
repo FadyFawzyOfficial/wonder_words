@@ -1,5 +1,7 @@
 import 'sign_up_localizations.dart';
 
+// ignore_for_file: type=lint
+
 /// The translations for Portuguese (`pt`).
 class SignUpLocalizationsPt extends SignUpLocalizations {
   SignUpLocalizationsPt([String locale = 'pt']) : super(locale);

@@ -1,5 +1,7 @@
 import 'sign_in_localizations.dart';
 
+// ignore_for_file: type=lint
+
 /// The translations for English (`en`).
 class SignInLocalizationsEn extends SignInLocalizations {
   SignInLocalizationsEn([String locale = 'en']) : super(locale);

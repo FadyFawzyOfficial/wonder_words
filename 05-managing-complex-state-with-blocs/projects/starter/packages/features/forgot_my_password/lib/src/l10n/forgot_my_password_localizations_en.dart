@@ -1,5 +1,7 @@
 import 'forgot_my_password_localizations.dart';
 
+// ignore_for_file: type=lint
+
 /// The translations for English (`en`).
 class ForgotMyPasswordLocalizationsEn extends ForgotMyPasswordLocalizations {
   ForgotMyPasswordLocalizationsEn([String locale = 'en']) : super(locale);
