@@ -137,7 +137,9 @@ patch-for-current-flutter:
 	make patch-package-secure-storage
 	make patch-package-infinite-scroll
     # make patch-monitoring
+	make patch-gradle
 	make patch-android-gradle
+	make patch-kotlin
 	make patch-android-app-compile
 
 patch-main:
@@ -173,9 +175,19 @@ patch-monitoring:
 	sed -i '' -e 's/firebase_analytics: ^9.1.12/firebase_analytics: ^11.4.1/' packages/monitoring/pubspec.yaml
 	sed -i '' -e 's/firebase_remote_config: ^2.0.11/firebase_remote_config: ^5.3.1/' packages/monitoring/pubspec.yaml
 
+patch-gradle:
+	sed -i '' -e 's/gradle-6.7-all.zip/gradle-8.3-all.zip/' android/gradle/wrapper/gradle-wrapper.properties
+	sed -i '' -e 's/gradle-7.4-all.zip/gradle-8.3-all.zip/' packages/component_library/example/android/gradle/wrapper/gradle-wrapper.properties
+
 patch-android-gradle:
-	sed -i '' -e "s/classpath 'com.android.tools.build:gradle:4.1.0'/classpath 'com.android.tools.build:gradle:7.4.1'/" android/build.gradle
-	sed -i '' -e "s/classpath 'com.google.gms:google-services:4.3.10'/classpath 'com.google.gms:google-services:4.3.14'/" android/build.gradle
+	sed -i '' -e 's/gradle:4.1.0/gradle:8.2.1/' android/build.gradle
+	sed -i '' -e 's/gradle:7.2.1/gradle:8.2.1/' packages/component_library/example/android/build.gradle
+	sed -i '' -e 's/google-services:4.3.10/google-services:4.3.14/' android/build.gradle
+
+patch-kotlin:
+	sed -i '' -e "s/ext.kotlin_version = '1.6.10'/ext.kotlin_version = '1.8.22'/" android/build.gradle
+	sed -i '' -e "s/ext.kotlin_version = '1.6.10'/ext.kotlin_version = '1.8.22'/" packages/component_library/example/android/build.gradle
 
 patch-android-app-compile:
-	sed -i '' -e 's/compileSdkVersion 31/compileSdkVersion 33/' android/app/build.gradle
+	sed -i '' -e 's/compileSdkVersion 31/compileSdkVersion flutter.compileSdkVersion/' android/app/build.gradle
+	sed -i '' -e 's/targetSdkVersion 30/targetSdkVersion flutter.targetSdkVersion/' android/app/build.gradle
