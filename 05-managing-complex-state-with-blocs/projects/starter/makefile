@@ -137,6 +137,7 @@ patch-for-current-flutter:
 	make patch-package-secure-storage
 	make patch-package-infinite-scroll
     # make patch-monitoring
+	make patch-gradle
 	make patch-android-gradle
 	make patch-android-app-compile
 
@@ -172,6 +173,10 @@ patch-monitoring:
 	sed -i '' -e 's/firebase_dynamic_links: ^4.3.1/firebase_dynamic_links: ^6.1.1/' packages/monitoring/pubspec.yaml
 	sed -i '' -e 's/firebase_analytics: ^9.1.12/firebase_analytics: ^11.4.1/' packages/monitoring/pubspec.yaml
 	sed -i '' -e 's/firebase_remote_config: ^2.0.11/firebase_remote_config: ^5.3.1/' packages/monitoring/pubspec.yaml
+
+patch-gradle:
+	sed -i '' -e 's/gradle-6.7-all.zip/gradle-8.3-all.zip/' android/gradle/wrapper/gradle-wrapper.properties
+	sed -i '' -e 's/gradle-7.4-all.zip/gradle-8.3-all.zip/' packages/component_library/example/android/gradle/wrapper/gradle-wrapper.properties
 
 patch-android-gradle:
 	sed -i '' -e "s/classpath 'com.android.tools.build:gradle:4.1.0'/classpath 'com.android.tools.build:gradle:7.4.1'/" android/build.gradle
