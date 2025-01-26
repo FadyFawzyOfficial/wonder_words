@@ -22,7 +22,7 @@ class QuoteListFilterByFavoritesToggled extends QuoteListEvent {
 class QuoteListTagChanged extends QuoteListEvent {
   final Tag? tag;
 
-  const QuoteListTagChanged({this.tag});
+  const QuoteListTagChanged(this.tag);
 
   @override
   List<Object?> get props => [tag];
