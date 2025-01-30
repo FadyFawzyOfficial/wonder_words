@@ -98,7 +98,12 @@ class QuoteListBloc extends Bloc<QuoteListEvent, QuoteListState> {
         }
       },
 
-      // ToDo: Customize how events are processed.
+      // Completed: Customize how events are processed.
+      transformer: (eventStream, eventHandler) {
+        // ToDo: Debounce search events.
+
+        // ToDo: Discard in-progress event if a new one comes in.
+      },
     );
   }
 
