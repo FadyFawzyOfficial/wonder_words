@@ -103,7 +103,42 @@ class QuoteListBloc extends Bloc<QuoteListEvent, QuoteListState> {
   }
 
   Future<void> _handleQuoteListUsernameObtained(Emitter emitter) async {
-    // TODO: Handle QuoteListUsernameObtained.
+    // Completed: Handle QuoteListUsernameObtained.
+    //* 1. Use the emitter to set the UI back to its initial state -with a full-screen
+    //* loading indicator- while keeping any filters the users might have selected,
+    //* like a tag, for example. Re-emitting the initial state makes no difference when
+    //* the user first opens the app — since the screen will still be in the initial state —
+    //* but is essential for when the user signs in or out at a later time.
+    emitter(QuoteListState(filter: state.filter));
+
+    //! 2. Call the _fetchQuotePage() function you crated in the previous section
+    //! to get a new Stream you can subscribe to, to get the initial page.
+    final firstPageFetchStream = _fetchQuotePage(
+      1,
+      fetchPolicy: QuoteListPageFetchPolicy.cacheAndNetwork,
+    );
+
+    //! 3. Use the onEach() function from the emitter to handle subscribing to the
+    //! firstPageFetchStream and sending out each new state it emits to the UI.
+    return emitter.onEach<QuoteListState>(
+      firstPageFetchStream,
+      onData: emitter,
+    );
+
+    //? You know the reason _fetchQuotePage() returns a Stream and not a Future
+    //? is because it can emit up to two times when you specify the cacheAndNetwork
+    //? fetch policy, which is exactly what you’re doing here.
+    //! So, what that emitter.onEach() call does is subscribe to firstPageFetchStream and use
+    //! the emitter itself as a function to send the values from the Stream to the UI on each new emission.
+
+    //! To see this mechanism in play, build and run the app twice on your device.
+    //! Twice? Yes! The first time, you should just wait until the app loads some quotes
+    //! on the screen, and then you can close it — this ensures you have some quotes
+    //! stored locally, or cached. Then, when you run the app for the second time,
+    //! notice it almost instantly shows you the quotes you had the first time you opened
+    //! the app — this is the first firstPageFetchStream emission. Then, after a few
+    //! seconds, you can see the app replace those “old” quotes with fresh ones it got
+    //! behind the scenes - your second emission. Cool, huh?
   }
 
   Future<void> _handleQuoteListFailedFetchRetried(Emitter emitter) {
