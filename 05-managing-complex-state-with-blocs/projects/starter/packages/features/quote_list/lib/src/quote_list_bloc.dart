@@ -66,7 +66,40 @@ class QuoteListBloc extends Bloc<QuoteListEvent, QuoteListState> {
   final QuoteRepository _quoteRepository;
 
   void _registerEventHandler() {
-    // TODO: Take in the events.
+    // Completed: Take in the events.
+    //* 1. Call the on() function and use the angle brackets to specify the type
+    //* of the events you want to register the handler for. In this case, it's
+    //* QuoteListEvent, which encompasses all the event types you created at the beginning.
+    on<QuoteListEvent>(
+      //* 2. Pass in a callback to the on() function. That callback takes in the
+      //* actual event object sent by the UI and emitter object you have to use
+      //* to send new states back to the UI.
+      (event, emitter) async {
+        //! 3. Create if blocks for each type of event you can receive and then
+        //! call the corresponding functions that handle each one of them.
+        if (event is QuoteListUsernameObtained) {
+          await _handleQuoteListUsernameObtained(emitter);
+        } else if (event is QuoteListFailedFetchRetried) {
+          await _handleQuoteListFailedFetchRetried(emitter);
+        } else if (event is QuoteListItemUpdated) {
+          _handleQuoteListItemUpdated(emitter, event);
+        } else if (event is QuoteListTagChanged) {
+          await _handleQuoteListTagChanged(emitter, event);
+        } else if (event is QuoteListSearchTermChanged) {
+          await _handleQuoteListSearchTermChanged(emitter, event);
+        } else if (event is QuoteListRefreshed) {
+          await _handleQuoteListRefreshed(emitter, event);
+        } else if (event is QuoteListNextPageRequested) {
+          await _handleQuoteListNextPageRequested(emitter, event);
+        } else if (event is QuoteListItemFavoriteToggled) {
+          await _handleQuoteListItemFavoriteToggled(emitter, event);
+        } else if (event is QuoteListFilterByFavoritesToggled) {
+          await _handleQuoteListFilterByFavoritesToggled(emitter);
+        }
+      },
+
+      // ToDo: Customize how events are processed.
+    );
   }
 
   Future<void> _handleQuoteListUsernameObtained(Emitter emitter) async {
