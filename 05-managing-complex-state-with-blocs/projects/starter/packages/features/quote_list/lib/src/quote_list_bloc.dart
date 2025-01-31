@@ -100,7 +100,54 @@ class QuoteListBloc extends Bloc<QuoteListEvent, QuoteListState> {
 
       // Completed: Customize how events are processed.
       transformer: (eventStream, eventHandler) {
-        // ToDo: Debounce search events.
+        // Completed: Debounce search events.
+        //? 1. There are several functions you can call on Streams to generate a modified
+        //? copy of them; we call these functions operators.
+        //! Here, you use the where operator to generate a Stream that excludes
+        //! any QuoteListSearchTermChanged events.
+        final nonDebounceEventStream = eventStream.where(
+          (event) => event is! QuoteListSearchTermChanged,
+        );
+
+        final debounceEventStream = eventStream
+            //* 2. Here, you’re using the whereType operator to do the opposite of what you
+            //* did in the previous step: generating a new Stream that excludes all but the
+            //* QuoteListSearchTermChanged events. Both the whereType and the
+            //* debounceTime operators you’ll use next come from the RxDart package,
+            //* which adds several capabilities to Dart’s Stream s
+            .whereType<QuoteListSearchTermChanged>()
+            //! 3. Now that you have a separate Stream for the QuoteListSearchTermChanged
+            //! events, you applied the debounceTime operator to it so you can achieve that
+            //! debouncing effect of one second without affecting all the other types of
+            //! events.
+            .debounceTime(const Duration(seconds: 1))
+            //! 4. Here, you’re using the where operator to add another great feature to your
+            //! searches: You’re skipping searches where the term entered by the user is
+            //! equal to the term of the search already on display. This can happen, for
+            //! example, if the user adds a letter to the search bar, then regrets it and deletes
+            //! it within the one-second time span. If you didn’t apply this where operator,
+            //! this would trigger another request even though the search term hasn’t changed.
+            .where((event) {
+          final previousFilter = state.filter;
+          final previousSearchTeam =
+              previousFilter is QuoteListFilterBySearchTerm
+                  ? previousFilter.searchTerm
+                  : '';
+
+          final isSearchNotAlreadyDisplayed =
+              event.searchTerm != previousSearchTeam;
+
+          return isSearchNotAlreadyDisplayed;
+        });
+
+        //! 5. In steps 1 and 2, you broke your eventStream into two other Stream s just
+        //! so that you could apply some operators exclusively to the search events. Now
+        //! that you’ve finished that, you’re merging the two Stream s back together so
+        //! you can continue implementing your transformer .
+        final mergedEventStream = MergeStream([
+          nonDebounceEventStream,
+          debounceEventStream,
+        ]);
 
         // ToDo: Discard in-progress event if a new one comes in.
       },
