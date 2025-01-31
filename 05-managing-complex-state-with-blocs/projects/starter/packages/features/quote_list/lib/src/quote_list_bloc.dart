@@ -98,7 +98,73 @@ class QuoteListBloc extends Bloc<QuoteListEvent, QuoteListState> {
         }
       },
 
-      // ToDo: Customize how events are processed.
+      // Completed: Customize how events are processed.
+      transformer: (eventStream, eventHandler) {
+        // Completed: Debounce search events.
+        //? 1. There are several functions you can call on Streams to generate a modified
+        //? copy of them; we call these functions operators.
+        //! Here, you use the where operator to generate a Stream that excludes
+        //! any QuoteListSearchTermChanged events.
+        final nonDebounceEventStream = eventStream.where(
+          (event) => event is! QuoteListSearchTermChanged,
+        );
+
+        final debounceEventStream = eventStream
+            //* 2. Here, you’re using the whereType operator to do the opposite of what you
+            //* did in the previous step: generating a new Stream that excludes all but the
+            //* QuoteListSearchTermChanged events. Both the whereType and the
+            //* debounceTime operators you’ll use next come from the RxDart package,
+            //* which adds several capabilities to Dart’s Stream s
+            .whereType<QuoteListSearchTermChanged>()
+            //! 3. Now that you have a separate Stream for the QuoteListSearchTermChanged
+            //! events, you applied the debounceTime operator to it so you can achieve that
+            //! debouncing effect of one second without affecting all the other types of
+            //! events.
+            .debounceTime(const Duration(seconds: 1))
+            //! 4. Here, you’re using the where operator to add another great feature to your
+            //! searches: You’re skipping searches where the term entered by the user is
+            //! equal to the term of the search already on display. This can happen, for
+            //! example, if the user adds a letter to the search bar, then regrets it and deletes
+            //! it within the one-second time span. If you didn’t apply this where operator,
+            //! this would trigger another request even though the search term hasn’t changed.
+            .where((event) {
+          final previousFilter = state.filter;
+          final previousSearchTeam =
+              previousFilter is QuoteListFilterBySearchTerm
+                  ? previousFilter.searchTerm
+                  : '';
+
+          final isSearchNotAlreadyDisplayed =
+              event.searchTerm != previousSearchTeam;
+
+          return isSearchNotAlreadyDisplayed;
+        });
+
+        //! 5. In steps 1 and 2, you broke your eventStream into two other Stream s just
+        //! so that you could apply some operators exclusively to the search events. Now
+        //! that you’ve finished that, you’re merging the two Stream s back together so
+        //! you can continue implementing your transformer .
+        final mergedEventStream = MergeStream([
+          nonDebounceEventStream,
+          debounceEventStream,
+        ]);
+
+        // Completed: Discard in-progress event if a new one comes in.
+        //? 1. This restartable function comes from the bloc_concurrency package,
+        //? which is a dependency of this quote_list package’s pubspec.yaml. This
+        //? restartable function is the one that has the desired canceling effect, but the
+        //? bloc_concurrency package provides a few different options as well:
+        //! Concurrent : process events concurrently (bloc's default)
+        //! Sequential : process events sequentially
+        //! droppable  : ignore any events added while an event is processing
+        //! restartable: process only the latest event and cancel previous event handlers
+        final restartableTransformer = restartable<QuoteListEvent>();
+
+        // 2. The restorable function actually returns another function. You then
+        // return the results from that function by passing them to yours
+        // mergedEventsStream and the eventHandler
+        return restartableTransformer(mergedEventStream, eventHandler);
+      },
     );
   }
 
