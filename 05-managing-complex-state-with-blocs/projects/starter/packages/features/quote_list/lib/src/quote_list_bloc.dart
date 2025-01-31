@@ -149,7 +149,21 @@ class QuoteListBloc extends Bloc<QuoteListEvent, QuoteListState> {
           debounceEventStream,
         ]);
 
-        // ToDo: Discard in-progress event if a new one comes in.
+        // Completed: Discard in-progress event if a new one comes in.
+        //? 1. This restartable function comes from the bloc_concurrency package,
+        //? which is a dependency of this quote_list package’s pubspec.yaml. This
+        //? restartable function is the one that has the desired canceling effect, but the
+        //? bloc_concurrency package provides a few different options as well:
+        //! Concurrent : process events concurrently (bloc's default)
+        //! Sequential : process events sequentially
+        //! droppable  : ignore any events added while an event is processing
+        //! restartable: process only the latest event and cancel previous event handlers
+        final restartableTransformer = restartable<QuoteListEvent>();
+
+        // 2. The restorable function actually returns another function. You then
+        // return the results from that function by passing them to yours
+        // mergedEventsStream and the eventHandler
+        return restartableTransformer(mergedEventStream, eventHandler);
       },
     );
   }
