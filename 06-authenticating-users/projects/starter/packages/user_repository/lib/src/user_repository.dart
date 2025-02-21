@@ -46,7 +46,31 @@ class UserRepository {
   }
 
   Future<void> signIn(String email, String password) async {
-    // TODO: Sign in the user by coordinating the Data Sources.
+    // Completed: Sign in the user by coordinating the Data Sources.
+    try {
+      // 1. Called the “sign-in” endpoint on the server using the remoteApi property,
+      // which is of type FavQsApi . If the request succeeds, you get a UserRM object
+      // back from the server and assign it to the apiUser property. The UserRM
+      // class holds the recently signed-in user’s token, email and username.
+      final apiUser = await remoteApi.signIn(email, password);
+
+      //! 2. Used the upsertUserInfo() function you just created in the UserSecureStorage class.
+      await _secureStorage.upsertUserInfo(
+          username: apiUser.username,
+          email: apiUser.email,
+          token: apiUser.token);
+
+      // TODO: Propagate changes to the signed in user.
+    } on InvalidCredentialsFavQsException catch (_) {
+      //! 3. Captured any InvalidCredentialsFavQsException s and converted them to
+      //! InvalidCredentialsException s. Doing so is important because
+      //! InvalidCredentialsFavQsException is only known by packages importing
+      //! the fav_qs_api internal package, which won’t be the case for users of this
+      //! UserRepository class. InvalidCredentialsException, on the other hand,
+      //! is part of the domain_models package and, therefore, is known to all
+      //! features, making it possible for them to handle the exception properly.
+      throw InvalidCredentialsException();
+    }
   }
 
   Stream<User?> getUser() async* {
@@ -54,6 +78,8 @@ class UserRepository {
   }
 
   Future<String?> getUserToken() async {
+    return null;
+
     // TODO: Provide the user token.
   }
 
