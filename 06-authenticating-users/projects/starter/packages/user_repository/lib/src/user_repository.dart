@@ -68,7 +68,15 @@ class UserRepository {
           email: apiUser.email,
           token: apiUser.token);
 
-      // TODO: Propagate changes to the signed in user.
+      // Completed: Propagate changes to the signed in user.
+      //* 1. Use a mapper function, toDomainModel(), to convert the apiUser object
+      //* from the UserRM type to the User type. UserRM is the type your network
+      //* layer uses - fav_qs_api internal package - while User is the neutral model
+      //* known by the rest of the codebase.
+      final domainUser = apiUser.toDomainModel();
+
+      //! 2. Replaced — or added, if this is the first sign-in — a new value to your BehaviorSubject .
+      _userSubject.add(domainUser);
     } on InvalidCredentialsFavQsException catch (_) {
       //! 3. Captured any InvalidCredentialsFavQsException s and converted them to
       //! InvalidCredentialsException s. Doing so is important because
