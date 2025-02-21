@@ -24,7 +24,15 @@ class UserRepository {
   final UserSecureStorage _secureStorage;
   final BehaviorSubject<DarkModePreference> _darkModePreferenceSubject =
       BehaviorSubject();
-  // TODO: Create a listenable property.
+
+  // Completed: Create a listenable property.
+  //! BehaviorSubject is a class that:
+  //!   1. Holds a value — from the type you specify within the angle brackets <> .
+  //!   2. Provides a stream property that you can use to listen for any changes to
+  //!   that value. When a piece of code starts listening to a BehaviorSubject ’s
+  //!   stream , it immediately gets the latest value on that property — assuming
+  //!   one has already been added — followed by all the subsequent changes to that value.
+  final BehaviorSubject<User?> _userSubject = BehaviorSubject();
 
   Future<void> upsertDarkModePreference(DarkModePreference preference) async {
     await _localStorage.upsertDarkModePreference(
