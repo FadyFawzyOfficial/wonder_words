@@ -24,7 +24,15 @@ class UserRepository {
   final UserSecureStorage _secureStorage;
   final BehaviorSubject<DarkModePreference> _darkModePreferenceSubject =
       BehaviorSubject();
-  // TODO: Create a listenable property.
+
+  // Completed: Create a listenable property.
+  //! BehaviorSubject is a class that:
+  //!   1. Holds a value — from the type you specify within the angle brackets <> .
+  //!   2. Provides a stream property that you can use to listen for any changes to
+  //!   that value. When a piece of code starts listening to a BehaviorSubject ’s
+  //!   stream , it immediately gets the latest value on that property — assuming
+  //!   one has already been added — followed by all the subsequent changes to that value.
+  final BehaviorSubject<User?> _userSubject = BehaviorSubject();
 
   Future<void> upsertDarkModePreference(DarkModePreference preference) async {
     await _localStorage.upsertDarkModePreference(
@@ -60,7 +68,15 @@ class UserRepository {
           email: apiUser.email,
           token: apiUser.token);
 
-      // TODO: Propagate changes to the signed in user.
+      // Completed: Propagate changes to the signed in user.
+      //* 1. Use a mapper function, toDomainModel(), to convert the apiUser object
+      //* from the UserRM type to the User type. UserRM is the type your network
+      //* layer uses - fav_qs_api internal package - while User is the neutral model
+      //* known by the rest of the codebase.
+      final domainUser = apiUser.toDomainModel();
+
+      //! 2. Replaced — or added, if this is the first sign-in — a new value to your BehaviorSubject .
+      _userSubject.add(domainUser);
     } on InvalidCredentialsFavQsException catch (_) {
       //! 3. Captured any InvalidCredentialsFavQsException s and converted them to
       //! InvalidCredentialsException s. Doing so is important because
@@ -74,7 +90,34 @@ class UserRepository {
   }
 
   Stream<User?> getUser() async* {
-    // TODO: Expose the BehaviorSubject.
+    // Completed: Expose the BehaviorSubject.
+
+    //* 1. Check if you’ve already added a value to _userSubject . If not, that means
+    //* this is the first time the app has called this function. Therefore, you need to
+    //* set the _userSubject with the values you have in the secure storage —
+    //* which is what you do inside the if block.
+    if (!_userSubject.hasValue) {
+      final userInfo = await Future.wait([
+        _secureStorage.getUserEmail(),
+        _secureStorage.getUsername(),
+      ]);
+
+      final email = userInfo[0];
+      final username = userInfo[1];
+
+      if (email != null && username != null) {
+        _userSubject.add(User(username: username, email: email));
+      } else {
+        _userSubject.add(null);
+      }
+    }
+
+    //? 2. Then, all you have to do is return the stream property of _userSubject.
+    //! Well, you’re not actually return ing the Stream , but that’s just because
+    //! getUser() is an async* function, which makes it impossible to return
+    //! anything. Instead, you use the yield* keyword, which generates a new
+    //! Stream that just re-emits all the values from _userSubject.stream.
+    yield* _userSubject.stream;
   }
 
   Future<String?> getUserToken() async {
