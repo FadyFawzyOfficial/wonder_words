@@ -121,9 +121,8 @@ class UserRepository {
   }
 
   Future<String?> getUserToken() async {
-    return null;
-
-    // TODO: Provide the user token.
+    // Completed: Provide the user token.
+    return _secureStorage.getUserToken();
   }
 
   Future<void> signUp(
