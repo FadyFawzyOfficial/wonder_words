@@ -74,14 +74,14 @@ class WonderWords extends StatefulWidget {
 class _WonderWordsState extends State<WonderWords> {
   final _keyValueStorage = KeyValueStorage();
   final _dynamicLinkService = DynamicLinkService();
-  late final _favQsApi = FavQsApi(
+  late final FavQsApi _favQsApi = FavQsApi(
     userTokenSupplier: () => _userRepository.getUserToken(),
   );
   late final _quoteRepository = QuoteRepository(
     remoteApi: _favQsApi,
     keyValueStorage: _keyValueStorage,
   );
-  late final _userRepository = UserRepository(
+  late final UserRepository _userRepository = UserRepository(
     remoteApi: _favQsApi,
     noSqlStorage: _keyValueStorage,
   );
