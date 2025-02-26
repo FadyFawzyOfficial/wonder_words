@@ -1,5 +1,7 @@
 import 'quote_details_localizations.dart';
 
+// ignore_for_file: type=lint
+
 /// The translations for English (`en`).
 class QuoteDetailsLocalizationsEn extends QuoteDetailsLocalizations {
   QuoteDetailsLocalizationsEn([String locale = 'en']) : super(locale);
