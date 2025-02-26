@@ -15,4 +15,24 @@ import 'package:wonder_words/tab_container_screen.dart';
 
 // TODO: Create the app's routing table.
 
-// TODO: Define the app's paths.
+// Completed: Define the app's paths.
+class _PathConstants {
+  const _PathConstants._();
+
+  static const String tabContainerPath = '/';
+
+  static const String quoteListPath = '${tabContainerPath}quotes';
+
+  static String get profileMenuPath => '${tabContainerPath}user';
+
+  static String get updateProfilePath => '$profileMenuPath/updateprofile';
+
+  static String get signInPath => '${tabContainerPath}sign-in';
+
+  static String get signUpPath => '${tabContainerPath}sign-up';
+
+  static String get idPathParameter => 'id';
+
+  static String quoteDetailsPath({int? quoteId}) =>
+      '$quoteListPath/${quoteId ?? ': $idPathParameter'}';
+}
