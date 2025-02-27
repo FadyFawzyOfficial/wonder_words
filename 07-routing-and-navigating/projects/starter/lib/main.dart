@@ -92,18 +92,21 @@ class _WonderWordsState extends State<WonderWords> {
   //! RoutemasterDelegate isRoutemaster’s implementation of the Nav 2’s RouterDelegate class
   //* You’re able to import this class because the Routemaster package is already
   //* listed as a dependency in your pubspec.yaml.
-  late final _routeDelegate = RoutemasterDelegate(
+  late final RoutemasterDelegate _routerDelegate = RoutemasterDelegate(
     //! 2. To instantiate a RoutemasterDelegate , you have to supply the
     //! routesBuilder parameter. routesBuilder takes in a function that receives
     //! a BuildContext and returns a RouteMap object.
-    routesBuilder: (context) => RouteMap(routes: {
-      //* 3. To instantiate a RouteMap , you have to supply the routes parameter.
-      //* Here’s where Routemaster’s approach gets close to simple named routes.
-      //! The routes parameter receives a Map<String, PageBuilder>, which links
-      //! every path you want to support in your app to a function that builds the
-      //! corresponding Page object.
-      '/': (_) => const MaterialPage(child: Placeholder()),
-    }),
+    routesBuilder: (context) {
+      return RouteMap(
+        routes: buildRoutingTable(
+          routerDelegate: _routerDelegate,
+          userRepository: _userRepository,
+          quoteRepository: _quoteRepository,
+          remoteValueService: widget.remoteValueService,
+          dynamicLinkService: _dynamicLinkService,
+        ),
+      );
+    },
   );
   final _lightTheme = LightWonderThemeData();
   final _darkTheme = DarkWonderThemeData();
@@ -134,7 +137,7 @@ class _WonderWordsState extends State<WonderWords> {
               UpdateProfileLocalizations.delegate,
             ],
             routeInformationParser: const RoutemasterParser(),
-            routerDelegate: _routeDelegate,
+            routerDelegate: _routerDelegate,
           ),
         );
       },
