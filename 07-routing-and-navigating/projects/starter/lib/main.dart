@@ -74,19 +74,40 @@ class WonderWords extends StatefulWidget {
 class _WonderWordsState extends State<WonderWords> {
   final _keyValueStorage = KeyValueStorage();
   final _dynamicLinkService = DynamicLinkService();
-  late final _favQsApi = FavQsApi(
+  late final FavQsApi _favQsApi = FavQsApi(
     userTokenSupplier: () => _userRepository.getUserToken(),
   );
   late final _quoteRepository = QuoteRepository(
     remoteApi: _favQsApi,
     keyValueStorage: _keyValueStorage,
   );
-  late final _userRepository = UserRepository(
+  late final UserRepository _userRepository = UserRepository(
     remoteApi: _favQsApi,
     noSqlStorage: _keyValueStorage,
   );
 
-  // TODO: Instantiate the RouterDelegate.
+  // Completed: Instantiate the RouterDelegate.
+  //? 1. You’re creating a late property to hold a RoutemasterDelegate object —
+  //? you’ll understand why the late later on.
+  //! RoutemasterDelegate isRoutemaster’s implementation of the Nav 2’s RouterDelegate class
+  //* You’re able to import this class because the Routemaster package is already
+  //* listed as a dependency in your pubspec.yaml.
+  late final RoutemasterDelegate _routerDelegate = RoutemasterDelegate(
+    //! 2. To instantiate a RoutemasterDelegate , you have to supply the
+    //! routesBuilder parameter. routesBuilder takes in a function that receives
+    //! a BuildContext and returns a RouteMap object.
+    routesBuilder: (context) {
+      return RouteMap(
+        routes: buildRoutingTable(
+          routerDelegate: _routerDelegate,
+          userRepository: _userRepository,
+          quoteRepository: _quoteRepository,
+          remoteValueService: widget.remoteValueService,
+          dynamicLinkService: _dynamicLinkService,
+        ),
+      );
+    },
+  );
   final _lightTheme = LightWonderThemeData();
   final _darkTheme = DarkWonderThemeData();
 
@@ -100,7 +121,7 @@ class _WonderWordsState extends State<WonderWords> {
         return WonderTheme(
           lightTheme: _lightTheme,
           darkTheme: _darkTheme,
-          child: MaterialApp(
+          child: MaterialApp.router(
             theme: _lightTheme.materialThemeData,
             darkTheme: _darkTheme.materialThemeData,
             themeMode: darkModePreference?.toThemeMode(),
@@ -115,7 +136,8 @@ class _WonderWordsState extends State<WonderWords> {
               SignUpLocalizations.delegate,
               UpdateProfileLocalizations.delegate,
             ],
-            home: const Placeholder(),
+            routeInformationParser: const RoutemasterParser(),
+            routerDelegate: _routerDelegate,
           ),
         );
       },
