@@ -91,7 +91,78 @@ Map<String, PageBuilder> buildRoutingTable({
       );
     },
 
-    // TODO: Define the subsequent routes.
+    // Completed: Define the subsequent routes.
+    _PathConstants.updateProfilePath: (_) {
+      return MaterialPage(
+        name: 'update-profile',
+        child: UpdateProfileScreen(
+          userRepository: userRepository,
+          onUpdateProfileSuccess: () => routerDelegate.pop(),
+        ),
+      );
+    },
+
+    _PathConstants.quoteDetailsPath(): (info) {
+      return MaterialPage(
+        name: 'quote-details',
+        child: QuoteDetailsScreen(
+          quoteRepository: quoteRepository,
+          //! 1. This info.pathParameters[_PathConstants.idPathParameter] is how you
+          //! extract a path parameter from a route. For example, when the user taps a
+          //! quote on the quote list screen, you push a route with that quote’s ID
+          //! embedded within the path, such as /quotes/13 . Here, you’re extracting that
+          //! 13 and passing it to the QuoteDetailsScreen. The reason you had to wrap
+          //! it in an int.parse() call is because all path parameters come to you as
+          //! Strings.
+          quoteId: int.parse(
+            info.pathParameters[_PathConstants.idPathParameter] ?? '',
+          ),
+          onAuthenticationError: () =>
+              routerDelegate.push(_PathConstants.signInPath),
+          //! 2. This is just using Firebase to generate a shareable link for a quote. You’ll
+          //! learn all about this in the next chapter, “Deep Linking”.
+          shareableLinkGenerator: (quote) =>
+              dynamicLinkService.generateDynamicLinkUrl(
+            path: _PathConstants.quoteDetailsPath(quoteId: quote.id),
+            socialMetaTagParameters: SocialMetaTagParameters(
+              title: quote.body,
+              description: quote.author,
+            ),
+          ),
+        ),
+      );
+    },
+    _PathConstants.signInPath: (_) {
+      return MaterialPage(
+        name: 'sign-in',
+        fullscreenDialog: true,
+        child: Builder(
+          builder: (context) {
+            return SignInScreen(
+              userRepository: userRepository,
+              onSignInSuccess: routerDelegate.pop,
+              onSignUpTap: () => routerDelegate.push(_PathConstants.signUpPath),
+              onForgotMyPasswordTap: () => showDialog(
+                context: context,
+                builder: (context) => ForgotMyPasswordDialog(
+                  userRepository: userRepository,
+                  onCancelTap: routerDelegate.pop,
+                  onEmailRequestSuccess: routerDelegate.pop,
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    },
+    _PathConstants.signUpPath: (_) {
+      return MaterialPage(
+        child: SignUpScreen(
+          userRepository: userRepository,
+          onSignUpSuccess: routerDelegate.pop,
+        ),
+      );
+    },
   };
 }
 
@@ -114,5 +185,5 @@ class _PathConstants {
   static String get idPathParameter => 'id';
 
   static String quoteDetailsPath({int? quoteId}) =>
-      '$quoteListPath/${quoteId ?? ': $idPathParameter'}';
+      '$quoteListPath/${quoteId ?? ':$idPathParameter'}';
 }
