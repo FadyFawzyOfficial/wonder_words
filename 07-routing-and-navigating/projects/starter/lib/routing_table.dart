@@ -13,6 +13,106 @@ import 'package:update_profile/update_profile.dart';
 import 'package:user_repository/user_repository.dart';
 import 'package:wonder_words/tab_container_screen.dart';
 
-// TODO: Create the app's routing table.
+// Completed: Create the app's routing table.
+//! 1. The return type is a Map<String, PageBuilder> . As you’ve seen, this maps
+//! each path you want to support — the String — to the function that builds
+//! the corresponding page — the PageBuilder .
+Map<String, PageBuilder> buildRoutingTable({
+  //* 2. Most of the dependencies you’ll need to instantiate your screens are already
+  //* available on lib/main.dart, so you’re asking them to be passed onto this
+  //* function so you can reuse them.
+  required RoutemasterDelegate routerDelegate,
+  required UserRepository userRepository,
+  required QuoteRepository quoteRepository,
+  required RemoteValueService remoteValueService,
+  required DynamicLinkService dynamicLinkService,
+}) {
+  return {
+    //! 3. The first path you declared is your app’s entry point: the '/'. The screen
+    //! you’re assigning to this path is the TabContainerScreen you’ve created.
+    //! This is the outermost screen that will hold the bottom
+    //! tab along with the two nested navigation stacks.
+    _PathConstants.tabContainerPath: (_) =>
+        //! 4. To achieve the nested navigation layout, you wrapped your
+        //! TabContainerScreen widget inside a CupertinoTabPage class. You then
+        //! leveraged its paths parameter to define which two routes should be the
+        //! entry point for each internal flow.
+        CupertinoTabPage(
+          child: const TabContainerScreen(),
+          paths: [
+            _PathConstants.quoteListPath,
+            _PathConstants.profileMenuPath,
+          ],
+        ),
 
-// TODO: Define the app's paths.
+    // Completed: Define the two nested routes homes.
+    _PathConstants.quoteListPath: (route) {
+      return MaterialPage(
+        //! 1. Assigning a name to your page isn’t mandatory but will be helpful when
+        //! you’re writing analytics code in Chapter 12, “Supporting the Development
+        //! Lifecycle With Firebase”.
+        name: 'quotes-list',
+        child: QuoteListScreen(
+          quoteRepository: quoteRepository,
+          userRepository: userRepository,
+          remoteValueService: remoteValueService,
+          onAuthenticationError: (context) {
+            //* 2. Here, you’re using the RoutemasterDelegate you created on main.dart to
+            //* navigate to a new screen. You can use it in this file because you asked for it as
+            //* a parameter of this buildRoutingTable function.
+            routerDelegate.push(_PathConstants.signInPath);
+          },
+          onQuoteSelected: (id) {
+            //! 3. The navigation here is a bit more complicated. The quoteDetailsPath route
+            //! may return a result: the updated Quote object if the user interacted with the
+            //! quote while on that screen — by favoriting it, for example. You then return
+            //! that Quote object to the onQuoteSelected callback just so your
+            //! QuoteListScreen can update that quote’s list item if something changed.
+            final navigation = routerDelegate
+                .push<Quote?>(_PathConstants.quoteDetailsPath(quoteId: id));
+
+            return navigation.result;
+          },
+        ),
+      );
+    },
+
+    _PathConstants.profileMenuPath: (_) {
+      return MaterialPage(
+        name: 'profile-menu',
+        child: ProfileMenuScreen(
+          userRepository: userRepository,
+          quoteRepository: quoteRepository,
+          onSignInTap: () => routerDelegate.push(_PathConstants.signInPath),
+          onSignUpTap: () => routerDelegate.push(_PathConstants.signUpPath),
+          onUpdateProfileTap: () =>
+              routerDelegate.push(_PathConstants.updateProfilePath),
+        ),
+      );
+    },
+
+    // TODO: Define the subsequent routes.
+  };
+}
+
+// Completed: Define the app's paths.
+class _PathConstants {
+  const _PathConstants._();
+
+  static const String tabContainerPath = '/';
+
+  static const String quoteListPath = '${tabContainerPath}quotes';
+
+  static String get profileMenuPath => '${tabContainerPath}user';
+
+  static String get updateProfilePath => '$profileMenuPath/updateprofile';
+
+  static String get signInPath => '${tabContainerPath}sign-in';
+
+  static String get signUpPath => '${tabContainerPath}sign-up';
+
+  static String get idPathParameter => 'id';
+
+  static String quoteDetailsPath({int? quoteId}) =>
+      '$quoteListPath/${quoteId ?? ': $idPathParameter'}';
+}
