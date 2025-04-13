@@ -185,8 +185,8 @@ patch-android-gradle:
 	sed -i '' -e 's/google-services:4.3.10/google-services:4.3.14/' android/build.gradle
 
 patch-kotlin:
-	sed -i '' -e "s/ext.kotlin_version = '1.6.10'/ext.kotlin_version = '1.8.22'/" android/build.gradle
-	sed -i '' -e "s/ext.kotlin_version = '1.6.10'/ext.kotlin_version = '1.8.22'/" packages/component_library/example/android/build.gradle
+	sed -i '' -e "s/ext.kotlin_version = '1.6.10'/ext.kotlin_version = '2.0.20'/" android/build.gradle
+	sed -i '' -e "s/ext.kotlin_version = '1.6.10'/ext.kotlin_version = '2.0.20'/" packages/component_library/example/android/build.gradle
 
 patch-android-app-compile:
 	sed -i '' -e 's/compileSdkVersion 31/compileSdkVersion flutter.compileSdkVersion/' android/app/build.gradle
