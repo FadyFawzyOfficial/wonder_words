@@ -176,17 +176,18 @@ patch-monitoring:
 	sed -i '' -e 's/firebase_remote_config: ^2.0.11/firebase_remote_config: ^5.3.1/' packages/monitoring/pubspec.yaml
 
 patch-gradle:
-	sed -i '' -e 's/gradle-6.7-all.zip/gradle-8.3-all.zip/' android/gradle/wrapper/gradle-wrapper.properties
-	sed -i '' -e 's/gradle-7.4-all.zip/gradle-8.3-all.zip/' packages/component_library/example/android/gradle/wrapper/gradle-wrapper.properties
+	sed -i '' -e 's/gradle-6.7-all.zip/gradle-8.10.2-all.zip/' android/gradle/wrapper/gradle-wrapper.properties
+	sed -i '' -e 's/gradle-7.4-all.zip/gradle-8.10.2-all.zip/' packages/component_library/example/android/gradle/wrapper/gradle-wrapper.properties
 
 patch-android-gradle:
-	sed -i '' -e 's/gradle:4.1.0/gradle:8.2.1/' android/build.gradle
-	sed -i '' -e 's/gradle:7.2.1/gradle:8.2.1/' packages/component_library/example/android/build.gradle
-	sed -i '' -e 's/google-services:4.3.10/google-services:4.3.14/' android/build.gradle
+	sed -i '' -e 's/gradle:4.1.0/gradle:8.8.2/' android/build.gradle
+	sed -i '' -e 's/gradle:7.2.1/gradle:8.8.2/' packages/component_library/example/android/build.gradle
+	sed -i '' -e 's/google-services:4.3.10/google-services:4.4.2/' android/build.gradle
+	sed -i '' -e 's/firebase-crashlytics-gradle:2.7.1/firebase-crashlytics-gradle:3.0.1/' android/build.gradle
 
 patch-kotlin:
-	sed -i '' -e "s/ext.kotlin_version = '1.6.10'/ext.kotlin_version = '1.8.22'/" android/build.gradle
-	sed -i '' -e "s/ext.kotlin_version = '1.6.10'/ext.kotlin_version = '1.8.22'/" packages/component_library/example/android/build.gradle
+	sed -i '' -e "s/ext.kotlin_version = '1.6.10'/ext.kotlin_version = '2.0.20'/" android/build.gradle
+	sed -i '' -e "s/ext.kotlin_version = '1.6.10'/ext.kotlin_version = '2.0.20'/" packages/component_library/example/android/build.gradle
 
 patch-android-app-compile:
 	sed -i '' -e 's/compileSdkVersion 31/compileSdkVersion flutter.compileSdkVersion/' android/app/build.gradle
