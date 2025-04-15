@@ -118,7 +118,16 @@ class _WonderWordsState extends State<WonderWords> {
     super.initState();
     _openInitialDynamicLinkIfAny();
 
-    // TODO: Listen to new dynamic links.
+    // Completed: Listen to new dynamic links.
+    //! 1. Storing the result of the listen() call in the _incomingDynamicLinksSubscription property.
+    //! This is necessary so you can cancel() the subscription when your widget get disposed.
+    _incomingDynamicLinksSubscription =
+        // 2. Using the onNewDynamicLinkPath property of the DynamicLinkService class.
+        _dynamicLinkService.onNewDynamicLinkPath.listen(
+      //* 3. Forwarding any new paths coming in from that Stream to the push()
+      //* function of your _routerDelegate property. This is what makes the navigation happen.
+      _routerDelegate.push,
+    );
   }
 
   Future<void> _openInitialDynamicLinkIfAny() async {
