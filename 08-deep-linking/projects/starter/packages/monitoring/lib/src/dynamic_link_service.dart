@@ -59,5 +59,19 @@ class DynamicLinkService {
     return link?.path;
   }
 
-  // TODO: Expose a way to listen to new links.
+  // Completed: Expose a way to listen to new links.
+  //* 1. You're creating a property that exposes a Stream>String> so that users of
+  //* this function can listen to get notified about when a new link comes in.
+  Stream<String> get onNewDynamicLinkPath {
+    //! 2. The FirebaseDynamicLinks class contains an onLink property, which is
+    //! pretty much what you need. You then just use the map function to change
+    //! the data type of that Steam from PendingDynamicLinkData to a String
+    //! containing just the path of the screen you need to open - which is the
+    //! only thing you need to navigate.
+    return _dynamicLinks.onLink.map((PendingDynamicLinkData data) {
+      final link = data.link;
+      final path = link.path;
+      return path;
+    });
+  }
 }
