@@ -110,7 +110,25 @@ class _WonderWordsState extends State<WonderWords> {
   final _darkTheme = DarkWonderThemeData();
   late StreamSubscription _incomingDynamicLinksSubscription;
 
-  // TODO: Handle initial dynamic link if any.
+  // Completed: Handle initial dynamic link if any.
+  //! Since you’re adding this to the topmost widget in your app, this will run
+  //! every time your app launches. The logic you wrote will then:
+  @override
+  void initState() {
+    super.initState();
+    _openInitialDynamicLinkIfAny();
+
+    // TODO: Listen to new dynamic links.
+  }
+
+  Future<void> _openInitialDynamicLinkIfAny() async {
+    //* 1. Check if a dynamic link launched the app.
+    final path = await _dynamicLinkService.getInitialDynamicLinkPath();
+    //* 2. If it did, then navigate to the appropriate path.
+    if (path != null) {
+      _routerDelegate.push(path);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
