@@ -76,19 +76,19 @@ class _WonderWordsState extends State<WonderWords> {
   final _keyValueStorage = KeyValueStorage();
   final _analyticsService = AnalyticsService();
   final _dynamicLinkService = DynamicLinkService();
-  late final _favQsApi = FavQsApi(
+  late final FavQsApi _favQsApi = FavQsApi(
     userTokenSupplier: () => _userRepository.getUserToken(),
   );
   late final _quoteRepository = QuoteRepository(
     remoteApi: _favQsApi,
     keyValueStorage: _keyValueStorage,
   );
-  late final _userRepository = UserRepository(
+  late final UserRepository _userRepository = UserRepository(
     remoteApi: _favQsApi,
     noSqlStorage: _keyValueStorage,
   );
 
-  late final _routerDelegate = RoutemasterDelegate(
+  late final RoutemasterDelegate _routerDelegate = RoutemasterDelegate(
     observers: [
       ScreenViewObserver(
         analyticsService: _analyticsService,
@@ -110,7 +110,34 @@ class _WonderWordsState extends State<WonderWords> {
   final _darkTheme = DarkWonderThemeData();
   late StreamSubscription _incomingDynamicLinksSubscription;
 
-  // TODO: Handle initial dynamic link if any.
+  // Completed: Handle initial dynamic link if any.
+  //! Since you’re adding this to the topmost widget in your app, this will run
+  //! every time your app launches. The logic you wrote will then:
+  @override
+  void initState() {
+    super.initState();
+    _openInitialDynamicLinkIfAny();
+
+    // Completed: Listen to new dynamic links.
+    //! 1. Storing the result of the listen() call in the _incomingDynamicLinksSubscription property.
+    //! This is necessary so you can cancel() the subscription when your widget get disposed.
+    _incomingDynamicLinksSubscription =
+        // 2. Using the onNewDynamicLinkPath property of the DynamicLinkService class.
+        _dynamicLinkService.onNewDynamicLinkPath.listen(
+      //* 3. Forwarding any new paths coming in from that Stream to the push()
+      //* function of your _routerDelegate property. This is what makes the navigation happen.
+      _routerDelegate.push,
+    );
+  }
+
+  Future<void> _openInitialDynamicLinkIfAny() async {
+    //* 1. Check if a dynamic link launched the app.
+    final path = await _dynamicLinkService.getInitialDynamicLinkPath();
+    //* 2. If it did, then navigate to the appropriate path.
+    if (path != null) {
+      _routerDelegate.push(path);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
