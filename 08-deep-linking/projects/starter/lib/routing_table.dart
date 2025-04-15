@@ -92,7 +92,31 @@ Map<String, PageBuilder> buildRoutingTable({
             onAuthenticationError: () {
               routerDelegate.push(_PathConstants.signInPath);
             },
-            // TODO: Specify the shareableLinkGenerator parameter.
+            //! First of all, observe where you’re inserting this code. You dove into this
+            //! routing_table.dart file in the last chapter.
+            //! This is where you define all your routes and connect all your features
+            // Completed: Specify the shareableLinkGenerator parameter.
+            //* 1. Specified the shareableLinkGenerator parameter of the
+            //* QuoteDetailsScreen class. This parameter expects a function that
+            //* the quote details screen can use to generate a dynamic link.
+            //* That function receives a quote and must return a Future<String>
+            //* containing the shareable link of the quote.
+            shareableLinkGenerator: (quote) {
+              //* 2. Then, to actually generate the link, you're calling the
+              //* generateDynamicLinkUrl() function you created inside the
+              //* DynamicLinkService class and provide it:
+              //! 1. The path of the quote details screen containing the ID for
+              //!    that specific quote the user wants to share.
+              //! 2. The socialMetaTagParameters containing some information
+              //!    about the quote, so the link looks good on social media.
+              return dynamicLinkService.generateDynamicLinkUrl(
+                path: _PathConstants.quoteDetailsPath(quoteId: quote.id),
+                socialMetaTagParameters: SocialMetaTagParameters(
+                  title: quote.body,
+                  description: quote.author,
+                ),
+              );
+            },
           ),
         ),
     _PathConstants.signInPath: (_) => MaterialPage(
