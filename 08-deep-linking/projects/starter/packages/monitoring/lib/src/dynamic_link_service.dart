@@ -49,7 +49,15 @@ class DynamicLinkService {
     return shortLink.shortUrl.toString();
   }
 
-  // TODO: Create a function that returns the link that launched the app.
+  // Completed: Create a function that returns the link that launched the app.
+  //* That’s it! The name of the function says it all. If the app was launched from a
+  //* dynamic link, this function you just created is capable of returning that link to
+  //* you so you can navigate to the corresponding screen.
+  Future<String?> getInitialDynamicLinkPath() async {
+    final data = await _dynamicLinks.getInitialLink();
+    final link = data?.link;
+    return link?.path;
+  }
 
   // TODO: Expose a way to listen to new links.
 }
