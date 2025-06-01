@@ -10,13 +10,14 @@ class DarkModePreferencePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Get a ProfileMenuLocalizations instance.
+    // Completed: Get a ProfileMenuLocalizations instance.
+    final l10n = ProfileMenuLocalizations.of(context);
     final bloc = context.read<ProfileMenuBloc>();
     return Column(
       children: [
         ListTile(
           title: Text(
-            'Dark Mode Preferences',
+            l10n.darkModePreferencesHeaderTileLabel,
             style: const TextStyle(
               fontSize: FontSize.mediumLarge,
               fontWeight: FontWeight.bold,
@@ -27,9 +28,7 @@ class DarkModePreferencePicker extends StatelessWidget {
         ...ListTile.divideTiles(
           tiles: [
             RadioListTile<DarkModePreference>(
-              title: Text(
-                'Always Dark',
-              ),
+              title: Text(l10n.darkModePreferencesAlwaysDarkTileLabel),
               value: DarkModePreference.alwaysDark,
               groupValue: currentValue,
               onChanged: (newOption) {
@@ -41,9 +40,7 @@ class DarkModePreferencePicker extends StatelessWidget {
               },
             ),
             RadioListTile<DarkModePreference>(
-              title: Text(
-                'Always Light',
-              ),
+              title: Text(l10n.darkModePreferencesAlwaysLightTileLabel),
               value: DarkModePreference.alwaysLight,
               groupValue: currentValue,
               onChanged: (newOption) {
@@ -55,9 +52,7 @@ class DarkModePreferencePicker extends StatelessWidget {
               },
             ),
             RadioListTile<DarkModePreference>(
-              title: Text(
-                'Use System Settings',
-              ),
+              title: Text(l10n.darkModePreferencesUseSystemSettingsTileLabel),
               value: DarkModePreference.useSystemSettings,
               groupValue: currentValue,
               onChanged: (newOption) {
