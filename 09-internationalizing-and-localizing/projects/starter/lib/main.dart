@@ -149,7 +149,10 @@ class _WonderWordsState extends State<WonderWords> {
               Locale('pt', ''),
             ],
             localizationsDelegates: const [
-              // TODO: Add Flutter's delegates.
+              // Completed: Add Flutter's delegates.
+              //? The other delegates that were already sitting on this
+              GlobalCupertinoLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
               // Completed: Add ProfileMenuLocalizations' delegate.
               AppLocalizations.delegate,
               ComponentLibraryLocalizations.delegate,
