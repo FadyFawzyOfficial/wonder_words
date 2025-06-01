@@ -9,7 +9,10 @@ dependencies:
     path: ../../component_library
   flutter:
     sdk: flutter
-  ## TODO: Add l10n dependencies.
+  ## Completed: Add l10n dependencies.
+  flutter_localization:
+    sdk: flutter
+  intl: any
   quote_repository:
     path: ../../quote_repository
   flutter_bloc: ^8.0.1
