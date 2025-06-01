@@ -1,0 +1,17 @@
+# Tells Flutter where it can find your arb files
+arb-dir: lib/src/l10n
+# Tells Flutter where it can find your arb files
+template-arb-file: messages_en.arb
+# How you want it to name your generated Dart file.
+# The default is app_localizations.dart, which is too generic for a project containing several packages.
+output-localization-file: profile_menu_localizations.dart
+# Same as the above, but now for the name of the actual Dart class instead of the file.
+output-class: ProfileMenuLocalizations
+#! nullable-getter: If this was set to true , you’d need to check for nullability 
+#! whenever accessing a property from your Flutter code, like: l10n?.signedInUserGreeting.
+nullable-getter: false
+#? By default, Flutter generates your localization files under a hidden/synthetic package
+#? that’s only visible to the package you generated the files for.
+#! This doesn’t work for WonderWords’ multi-package structure; you need to be able to export your localization files
+#! so you can access them from your main package to plug them into your MaterialApp.
+synthetic-package: false
