@@ -146,7 +146,7 @@ class _WonderWordsState extends State<WonderWords> {
             // TODO: Add supported locales.
             localizationsDelegates: const [
               // TODO: Add Flutter's delegates.
-              // TODO: Add ProfileMenuLocalizations' delegate.
+              // Completed: Add ProfileMenuLocalizations' delegate.
               AppLocalizations.delegate,
               ComponentLibraryLocalizations.delegate,
               QuoteListLocalizations.delegate,
@@ -154,6 +154,7 @@ class _WonderWordsState extends State<WonderWords> {
               ForgotMyPasswordLocalizations.delegate,
               SignUpLocalizations.delegate,
               UpdateProfileLocalizations.delegate,
+              ProfileMenuLocalizations.delegate,
             ],
             routerDelegate: _routerDelegate,
             routeInformationParser: const RoutemasterParser(),
