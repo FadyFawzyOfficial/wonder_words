@@ -2,7 +2,7 @@ import 'package:component_library/component_library.dart';
 import 'package:flutter/material.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
-import '../../lib/src/search_bar.dart';
+// import '../../lib/src/search_bar.dart';
 
 List<Story> getStories(WonderThemeData theme) {
   return [

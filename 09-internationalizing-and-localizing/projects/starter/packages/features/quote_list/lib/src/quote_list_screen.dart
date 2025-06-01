@@ -12,7 +12,7 @@ import 'package:quote_list/src/quote_paged_list_view.dart';
 import 'package:quote_repository/quote_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
-import '../../../../component_library/lib/component_library.dart';
+// import '../../../../component_library/lib/component_library.dart';
 
 typedef QuoteSelected = Future<Quote?> Function(int selectedQuote);
 
