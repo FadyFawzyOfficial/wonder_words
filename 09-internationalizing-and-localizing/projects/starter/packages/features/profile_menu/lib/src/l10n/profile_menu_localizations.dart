@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'profile_menu_localizations_en.dart';
+import 'profile_menu_localizations_pt.dart';
 
 // ignore_for_file: type=lint
 
@@ -90,7 +91,8 @@ abstract class ProfileMenuLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
-    Locale('en')
+    Locale('en'),
+    Locale('pt')
   ];
 
   /// No description provided for @signInButtonLabel.
@@ -163,7 +165,7 @@ class _ProfileMenuLocalizationsDelegate extends LocalizationsDelegate<ProfileMen
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'pt'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_ProfileMenuLocalizationsDelegate old) => false;
@@ -175,6 +177,7 @@ ProfileMenuLocalizations lookupProfileMenuLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
     case 'en': return ProfileMenuLocalizationsEn();
+    case 'pt': return ProfileMenuLocalizationsPt();
   }
 
   throw FlutterError(
