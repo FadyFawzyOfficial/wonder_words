@@ -2,6 +2,7 @@ import 'package:component_library/component_library.dart';
 import 'package:domain_models/domain_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:profile_menu/src/l10n/profile_menu_localizations.dart';
 import 'package:profile_menu/src/profile_menu_bloc.dart';
 import 'package:quote_repository/quote_repository.dart';
 import 'package:user_repository/user_repository.dart';
@@ -55,7 +56,8 @@ class ProfileMenuView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Get a ProfileMenuLocalizations instance.
+    // Completed: Get a ProfileMenuLocalizations instance.
+    final l10n = ProfileMenuLocalizations.of(context);
     return StyledStatusBar.dark(
       child: Scaffold(
         body: SafeArea(
@@ -72,13 +74,9 @@ class ProfileMenuView extends StatelessWidget {
                       const SizedBox(
                         height: Spacing.xLarge,
                       ),
-                      Text(
-                        'Don\'t have an account?',
-                      ),
+                      Text(l10n.signUpOpeningText),
                       TextButton(
-                        child: Text(
-                          'Sign up',
-                        ),
+                        child: Text(l10n.signUpButtonLabel),
                         onPressed: onSignUpTap,
                       ),
                       const SizedBox(
@@ -93,7 +91,7 @@ class ProfileMenuView extends StatelessWidget {
                               Spacing.small,
                             ),
                             child: ShrinkableText(
-                              'Hi, $username!',
+                              l10n.signedInUserGreeting(username),
                               style: const TextStyle(
                                 fontSize: 36,
                               ),
@@ -103,7 +101,7 @@ class ProfileMenuView extends StatelessWidget {
                       ),
                       const Divider(),
                       ChevronListTile(
-                        label: 'Update Profile',
+                        label: l10n.updateProfileTileLabel,
                         onTap: onUpdateProfileTap,
                       ),
                       const Divider(),
@@ -144,7 +142,9 @@ class _SignInButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = WonderTheme.of(context);
-    // TODO: Get a ProfileMenuLocalizations instance.
+    // Completed: Get a ProfileMenuLocalizations instance.
+    final l10n = ProfileMenuLocalizations.of(context);
+
     return Padding(
       padding: EdgeInsets.only(
         left: theme.screenMargin,
@@ -153,7 +153,7 @@ class _SignInButton extends StatelessWidget {
       ),
       child: ExpandedElevatedButton(
         onTap: onSignInTap,
-        label: 'Sign In',
+        label: l10n.signInButtonLabel,
         icon: const Icon(
           Icons.login,
         ),
@@ -173,7 +173,9 @@ class _SignOutButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = WonderTheme.of(context);
-    // TODO: Get a ProfileMenuLocalizations instance.
+    // Completed: Get a ProfileMenuLocalizations instance.
+    final l10n = ProfileMenuLocalizations.of(context);
+
     return Padding(
       padding: EdgeInsets.only(
         left: theme.screenMargin,
@@ -181,9 +183,7 @@ class _SignOutButton extends StatelessWidget {
         bottom: Spacing.xLarge,
       ),
       child: isSignOutInProgress
-          ? ExpandedElevatedButton.inProgress(
-              label: 'Sign Out',
-            )
+          ? ExpandedElevatedButton.inProgress(label: l10n.signOutButtonLabel)
           : ExpandedElevatedButton(
               onTap: () {
                 final bloc = context.read<ProfileMenuBloc>();
@@ -191,7 +191,7 @@ class _SignOutButton extends StatelessWidget {
                   const ProfileMenuSignedOut(),
                 );
               },
-              label: 'Sign Out',
+              label: l10n.signOutButtonLabel,
               icon: const Icon(
                 Icons.logout,
               ),

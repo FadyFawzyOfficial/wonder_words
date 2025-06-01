@@ -76,19 +76,19 @@ class _WonderWordsState extends State<WonderWords> {
   final _keyValueStorage = KeyValueStorage();
   final _analyticsService = AnalyticsService();
   final _dynamicLinkService = DynamicLinkService();
-  late final _favQsApi = FavQsApi(
+  late final FavQsApi _favQsApi = FavQsApi(
     userTokenSupplier: () => _userRepository.getUserToken(),
   );
   late final _quoteRepository = QuoteRepository(
     remoteApi: _favQsApi,
     keyValueStorage: _keyValueStorage,
   );
-  late final _userRepository = UserRepository(
+  late final UserRepository _userRepository = UserRepository(
     remoteApi: _favQsApi,
     noSqlStorage: _keyValueStorage,
   );
 
-  late final _routerDelegate = RoutemasterDelegate(
+  late final RoutemasterDelegate _routerDelegate = RoutemasterDelegate(
     observers: [
       ScreenViewObserver(
         analyticsService: _analyticsService,
@@ -143,10 +143,17 @@ class _WonderWordsState extends State<WonderWords> {
             theme: _lightTheme.materialThemeData,
             darkTheme: _darkTheme.materialThemeData,
             themeMode: darkModePreference?.toThemeMode(),
-            // TODO: Add supported locales.
+            // Completed: Add supported locales.
+            supportedLocales: const [
+              Locale('en', ''),
+              Locale('pt', ''),
+            ],
             localizationsDelegates: const [
-              // TODO: Add Flutter's delegates.
-              // TODO: Add ProfileMenuLocalizations' delegate.
+              // Completed: Add Flutter's delegates.
+              //? The other delegates that were already sitting on this
+              GlobalCupertinoLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              // Completed: Add ProfileMenuLocalizations' delegate.
               AppLocalizations.delegate,
               ComponentLibraryLocalizations.delegate,
               QuoteListLocalizations.delegate,
@@ -154,6 +161,7 @@ class _WonderWordsState extends State<WonderWords> {
               ForgotMyPasswordLocalizations.delegate,
               SignUpLocalizations.delegate,
               UpdateProfileLocalizations.delegate,
+              ProfileMenuLocalizations.delegate,
             ],
             routerDelegate: _routerDelegate,
             routeInformationParser: const RoutemasterParser(),

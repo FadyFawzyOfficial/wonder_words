@@ -12,6 +12,8 @@ import 'package:quote_list/src/quote_paged_list_view.dart';
 import 'package:quote_repository/quote_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
+// import '../../../../component_library/lib/component_library.dart';
+
 typedef QuoteSelected = Future<Quote?> Function(int selectedQuote);
 
 class QuoteListScreen extends StatelessWidget {
@@ -144,7 +146,7 @@ class _QuoteListViewState extends State<QuoteListView> {
                     padding: EdgeInsets.symmetric(
                       horizontal: theme.screenMargin,
                     ),
-                    child: SearchBar(
+                    child: AppSearchBar(
                       controller: _searchBarController,
                     ),
                   ),
