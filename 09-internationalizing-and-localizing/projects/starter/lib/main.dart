@@ -143,7 +143,11 @@ class _WonderWordsState extends State<WonderWords> {
             theme: _lightTheme.materialThemeData,
             darkTheme: _darkTheme.materialThemeData,
             themeMode: darkModePreference?.toThemeMode(),
-            // TODO: Add supported locales.
+            // Completed: Add supported locales.
+            supportedLocales: const [
+              Locale('en', ''),
+              Locale('pt', ''),
+            ],
             localizationsDelegates: const [
               // TODO: Add Flutter's delegates.
               // Completed: Add ProfileMenuLocalizations' delegate.
