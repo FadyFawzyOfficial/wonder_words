@@ -17,9 +17,9 @@ import 'package:sign_in/sign_in.dart';
 import 'package:sign_up/sign_up.dart';
 import 'package:update_profile/update_profile.dart';
 import 'package:user_repository/user_repository.dart';
-import 'package:wonder_words/l10n/app_localizations.dart';
-import 'package:wonder_words/routing_table.dart';
-import 'package:wonder_words/screen_view_observer.dart';
+import 'l10n/app_localizations.dart';
+import 'routing_table.dart';
+import 'screen_view_observer.dart';
 
 void main() async {
   // Has to be late so it doesn't instantiate before the
@@ -129,10 +129,10 @@ class _WonderWordsState extends State<WonderWords> {
     }
   }
 
-  // TODO: replace build() method for demonstration purposes
+  // Completed: replace build() method for demonstration purposes
   @override
   Widget build(BuildContext context) {
-    // TODO: provide MaterialApp with correct theme data
+    // Completed: provide MaterialApp with correct theme data
     return WonderTheme(
       lightTheme: _lightTheme,
       darkTheme: _darkTheme,
