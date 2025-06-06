@@ -133,13 +133,19 @@ class _WonderWordsState extends State<WonderWords> {
   @override
   Widget build(BuildContext context) {
     // Completed: provide MaterialApp with correct theme data
+    // ToDo: Wrap with stream builder
+    //* 1. Initializes WonderTheme with the data from the 2 themes.
     return WonderTheme(
       lightTheme: _lightTheme,
       darkTheme: _darkTheme,
+      //! 2. MaterialApp.router uses both the light and dark materialThemeData defined
+      //! as an attribute of your implementations of WonderThemeData.
+      //! With the help of themeMode, the UI reflects one theme or the other,
       child: MaterialApp.router(
-        theme: ThemeData(),
-        darkTheme: ThemeData(),
-        themeMode: ThemeMode.light,
+        theme: _lightTheme.materialThemeData,
+        darkTheme: _darkTheme.materialThemeData,
+        // ToDo: change for dynamic theme changing
+        themeMode: ThemeMode.dark,
         supportedLocales: const [
           Locale('en', ''),
           Locale('pt', 'BR'),
