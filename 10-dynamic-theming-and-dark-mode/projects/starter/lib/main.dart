@@ -17,9 +17,10 @@ import 'package:sign_in/sign_in.dart';
 import 'package:sign_up/sign_up.dart';
 import 'package:update_profile/update_profile.dart';
 import 'package:user_repository/user_repository.dart';
-import 'package:wonder_words/l10n/app_localizations.dart';
-import 'package:wonder_words/routing_table.dart';
-import 'package:wonder_words/screen_view_observer.dart';
+
+import 'l10n/app_localizations.dart';
+import 'routing_table.dart';
+import 'screen_view_observer.dart';
 
 void main() async {
   // Has to be late so it doesn't instantiate before the
@@ -76,19 +77,19 @@ class _WonderWordsState extends State<WonderWords> {
   final _keyValueStorage = KeyValueStorage();
   final _analyticsService = AnalyticsService();
   final _dynamicLinkService = DynamicLinkService();
-  late final _favQsApi = FavQsApi(
+  late final FavQsApi _favQsApi = FavQsApi(
     userTokenSupplier: () => _userRepository.getUserToken(),
   );
   late final _quoteRepository = QuoteRepository(
     remoteApi: _favQsApi,
     keyValueStorage: _keyValueStorage,
   );
-  late final _userRepository = UserRepository(
+  late final UserRepository _userRepository = UserRepository(
     remoteApi: _favQsApi,
     noSqlStorage: _keyValueStorage,
   );
 
-  late final _routerDelegate = RoutemasterDelegate(
+  late final RoutemasterDelegate _routerDelegate = RoutemasterDelegate(
     observers: [
       ScreenViewObserver(
         analyticsService: _analyticsService,
@@ -129,36 +130,53 @@ class _WonderWordsState extends State<WonderWords> {
     }
   }
 
-  // TODO: replace build() method for demonstration purposes
+  // Completed: replace build() method for demonstration purposes
   @override
   Widget build(BuildContext context) {
-    // TODO: provide MaterialApp with correct theme data
-    return WonderTheme(
-      lightTheme: _lightTheme,
-      darkTheme: _darkTheme,
-      child: MaterialApp.router(
-        theme: ThemeData(),
-        darkTheme: ThemeData(),
-        themeMode: ThemeMode.light,
-        supportedLocales: const [
-          Locale('en', ''),
-          Locale('pt', 'BR'),
-        ],
-        localizationsDelegates: const [
-          GlobalCupertinoLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          AppLocalizations.delegate,
-          ComponentLibraryLocalizations.delegate,
-          ProfileMenuLocalizations.delegate,
-          QuoteListLocalizations.delegate,
-          SignInLocalizations.delegate,
-          ForgotMyPasswordLocalizations.delegate,
-          SignUpLocalizations.delegate,
-          UpdateProfileLocalizations.delegate,
-        ],
-        routerDelegate: _routerDelegate,
-        routeInformationParser: const RoutemasterParser(),
-      ),
+    // Completed: Wrap with stream builder
+    //! 1. Uses the StreamBuilder that reads the stream of
+    //! _darkModePreferenceSubject from user_repository.dart.
+    return StreamBuilder<DarkModePreference>(
+      stream: _userRepository.getDarkModePreference(),
+      builder: (context, snapshot) {
+        //! 2. The builder rebuilds the widget on the arrival of a new value. Here, you’ll
+        //! get the dark mode preference from the snapshot to use in the child widgets.
+        final darkModePreference = snapshot.data;
+        return WonderTheme(
+          lightTheme: _lightTheme,
+          darkTheme: _darkTheme,
+          //! 2. MaterialApp.router uses both the light and dark materialThemeData defined
+          //! as an attribute of your implementations of WonderThemeData.
+          //! With the help of themeMode, the UI reflects one theme or the other,
+          child: MaterialApp.router(
+            theme: _lightTheme.materialThemeData,
+            darkTheme: _darkTheme.materialThemeData,
+            // Completed: change for dynamic theme changing
+            //! 3. Sets the themeMode according to the user’s dark mode preference.
+            //! toThemeMode() is an extension method that converts DarkModePreference
+            //! to ThemeMode . It’s defined at the end of the main.dart file.
+            themeMode: darkModePreference?.toThemeMode(),
+            supportedLocales: const [
+              Locale('en', ''),
+              Locale('pt', 'BR'),
+            ],
+            localizationsDelegates: const [
+              GlobalCupertinoLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              AppLocalizations.delegate,
+              ComponentLibraryLocalizations.delegate,
+              ProfileMenuLocalizations.delegate,
+              QuoteListLocalizations.delegate,
+              SignInLocalizations.delegate,
+              ForgotMyPasswordLocalizations.delegate,
+              SignUpLocalizations.delegate,
+              UpdateProfileLocalizations.delegate,
+            ],
+            routerDelegate: _routerDelegate,
+            routeInformationParser: const RoutemasterParser(),
+          ),
+        );
+      },
     );
   }
 

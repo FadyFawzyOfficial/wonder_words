@@ -15,6 +15,7 @@ abstract class WonderThemeData {
 
   double gridSpacing = Spacing.mediumLarge;
 
+  //* 1. This is the declaration for a background color for the rounded choice chip.
   Color get roundedChoiceChipBackgroundColor;
 
   Color get roundedChoiceChipSelectedBackgroundColor;
@@ -40,10 +41,30 @@ abstract class WonderThemeData {
 }
 
 class LightWonderThemeData extends WonderThemeData {
-  // TODO: Add light theme implementation for materialThemeData
+  // Completed: Add light theme implementation for materialThemeData
   @override
-  ThemeData get materialThemeData => ThemeData();
+  ThemeData get materialThemeData {
+    return ThemeData(
+      //* 1. Brightness ‘s light and dark values set the theme for all the elements in
+      //* ThemeData . This assignment initializes the ThemeData elements with the
+      //* default light or dark theme values. So, if you don’t specify elements like
+      //* scaffoldBackgroundColor in ThemeData , then the app uses the default
+      //* ones from the Flutter framework.
+      brightness: Brightness.light,
+      //* 2. The light theme and dark theme implementations of materialThemeData
+      //* assign black and white colors as the primary swatches.
+      //! Note: primarySwatch is the driving factor for all the primary colors in the
+      //! app. For example, all the text in the app gets the colors from this swatch.
+      //! toMaterialColor is an extension method in wonder_theme_data.dart that
+      //! generates the swatch from any color. Feel free to look at the implementation of this extension.
+      primarySwatch: Colors.black.toMaterialColor(),
+      //! 3. This is the theme for the divider, which is the same for both light and dark
+      //! themes. Therefore, you use a global variable to define it.
+      dividerTheme: _dividerThemeData,
+    );
+  }
 
+  //* 2. Assigns the white color to rounded choice chip background for the light theme.
   @override
   Color get roundedChoiceChipBackgroundColor => Colors.white;
 
@@ -73,10 +94,32 @@ class LightWonderThemeData extends WonderThemeData {
 }
 
 class DarkWonderThemeData extends WonderThemeData {
-// TODO: Add dark theme implementation for materialThemeData
+// Completed: Add dark theme implementation for materialThemeData
   @override
-  ThemeData get materialThemeData => ThemeData();
+  ThemeData get materialThemeData {
+    return ThemeData(
+      //* 1. Brightness ‘s light and dark values set the theme for all the elements in
+      //* ThemeData . This assignment initializes the ThemeData elements with the
+      //* default light or dark theme values. So, if you don’t specify elements like
+      //* scaffoldBackgroundColor in ThemeData , then the app uses the default
+      //* ones from the Flutter framework.
+      brightness: Brightness.dark,
+      //* 2. The light theme and dark theme implementations of materialThemeData
+      //*assign black and white colors as the primary swatches.
+      primarySwatch: Colors.white.toMaterialColor(),
+      //! 3. This is the theme for the divider, which is the same for both light and dark
+      //! themes. Therefore, you use a global variable to define it.
+      dividerTheme: _dividerThemeData,
+      //* 4. An additional color for active toggle is defined for the dark theme, as it
+      //* doesn’t use color from primarySwatch .
+      colorScheme: ColorScheme.fromSwatch(
+        primarySwatch: Colors.white.toMaterialColor(),
+        brightness: Brightness.dark,
+      ).copyWith(secondary: Colors.white), // Replaces toggleableActiveColor,
+    );
+  }
 
+  //* 3. Assigns the black color to rounded choice chip background for the dark theme.
   @override
   Color get roundedChoiceChipBackgroundColor => Colors.black;
 

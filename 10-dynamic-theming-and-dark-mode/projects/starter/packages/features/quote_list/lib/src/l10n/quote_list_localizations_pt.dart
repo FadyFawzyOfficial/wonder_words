@@ -1,7 +1,6 @@
-
-
-
 import 'quote_list_localizations.dart';
+
+// ignore_for_file: type=lint
 
 /// The translations for Portuguese (`pt`).
 class QuoteListLocalizationsPt extends QuoteListLocalizations {

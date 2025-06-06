@@ -27,10 +27,23 @@ class UserRepository {
       BehaviorSubject();
 
   Future<void> upsertDarkModePreference(DarkModePreference preference) async {
-    // TODO: add logic for upserting theme mode
+    // Completed: add logic for upserting theme mode
+    //! 1. Saves the selected theme mode of type DarkModePreference to the local
+    //! storage. You won’t go into details on how to save theme mode to the local
+    //! storage using Hive. To refresh your memory on this, review Chapter 2,
+    //! “Mastering the Repository Pattern”.
+    await _localStorage.upsertDarkModePreference(preference.toCacheModel());
+
+    //! 2. Sets _darkModePreferenceSubject to the current theme mode.
+    _darkModePreferenceSubject.add(preference);
   }
 
   Stream<DarkModePreference> getDarkModePreference() async* {
+    //! 1. Initially, when _darkModePreferenceSubject is empty, the code fetches the
+    //! theme mode from local storage and adds it to the subject. If no theme mode
+    //! is stored in the local storage, the default preference
+    //! DarkModePreference.useSystemSettings is set, which indicates either light
+    //! or dark mode based on the device’s settings, and goes into the subject.
     if (!_darkModePreferenceSubject.hasValue) {
       final storedPreference = await _localStorage.getDarkModePreference();
       _darkModePreferenceSubject.add(
@@ -39,6 +52,8 @@ class UserRepository {
       );
     }
 
+    //* 2. Provides you with the BehaviorSubject ‘s stream, which you’ll listen to for
+    //* the changes in the following steps.
     yield* _darkModePreferenceSubject.stream;
   }
 
