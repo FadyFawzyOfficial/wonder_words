@@ -15,6 +15,7 @@ abstract class WonderThemeData {
 
   double gridSpacing = Spacing.mediumLarge;
 
+  //* 1. This is the declaration for a background color for the rounded choice chip.
   Color get roundedChoiceChipBackgroundColor;
 
   Color get roundedChoiceChipSelectedBackgroundColor;
@@ -63,6 +64,7 @@ class LightWonderThemeData extends WonderThemeData {
     );
   }
 
+  //* 2. Assigns the white color to rounded choice chip background for the light theme.
   @override
   Color get roundedChoiceChipBackgroundColor => Colors.white;
 
@@ -117,6 +119,7 @@ class DarkWonderThemeData extends WonderThemeData {
     );
   }
 
+  //* 3. Assigns the black color to rounded choice chip background for the dark theme.
   @override
   Color get roundedChoiceChipBackgroundColor => Colors.black;
 
