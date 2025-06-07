@@ -32,13 +32,21 @@ class ExpandedElevatedButton extends StatelessWidget {
     return SizedBox(
       height: _elevatedButtonHeight,
       width: double.infinity,
-      // TODO: replace child with button with icon
-      child: ElevatedButton(
-        onPressed: onTap,
-        child: Text(
-          label,
-        ),
-      ),
+      // Completed: replace child with button with icon
+      //* 1. Checks that icon is not null.
+      child: icon != null
+          //* 2. Returns ElevatedButton.icon if that icon isn’t null, which takes icon as an attribute.
+          ? ElevatedButton.icon(
+              onPressed: onTap,
+              label: Text(label),
+              icon: icon,
+            )
+          // * 3. If icon wasn’t provided to the widget as an attribute, it returns
+          //* ElevatedButton without icon .
+          : ElevatedButton(
+              onPressed: onTap,
+              child: Text(label),
+            ),
     );
   }
 }
