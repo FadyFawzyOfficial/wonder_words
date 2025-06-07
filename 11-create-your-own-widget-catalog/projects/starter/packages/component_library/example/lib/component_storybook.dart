@@ -15,6 +15,7 @@ class ComponentStorybook extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = WonderTheme.of(context);
     return Storybook(
       children: [
         ...getStories(theme),

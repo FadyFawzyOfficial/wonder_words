@@ -170,7 +170,7 @@ List<Story> getStories(WonderThemeData theme) {
     ),
     Story.simple(
       name: 'Centered Circular Progress Indicator',
-      child: const CenteredCircularProgressIndicator(),
+      child: const Center(child: CircularProgressIndicator()),
     ),
     Story(
       name: 'Rounded Choice Chip',
