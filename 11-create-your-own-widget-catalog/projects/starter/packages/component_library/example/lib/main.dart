@@ -1,13 +1,6 @@
+// Completed: add missing import
+import 'package:component_library_storybook/story_app.dart';
 import 'package:flutter/material.dart';
-// ToDo: add missing import
 
-void main() {
-  runApp(
-    // ToDo: replace the MaterialApp placeholder later
-    MaterialApp(
-      home: Container(
-        color: Colors.grey,
-      ),
-    ),
-  );
-}
+// Completed: replace the MaterialApp placeholder later
+void main() => runApp(StoryApp());
