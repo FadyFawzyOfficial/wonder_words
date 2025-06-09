@@ -26,7 +26,16 @@ class ComponentStorybook extends StatelessWidget {
       //! 1. The children attribute gets a List<Story>. It’s better to keep the
       //! stories in a separate file to avoid duplicating them when you decide
       //! to add a CustomStorybook in addition to the default storybook.
-      // ToDo: add localization delegates
+      // Completed: add localization delegates
+      //* Recall what you learned in Chapter 9, “Internationalizing & Localizing”.
+      //* Since this is a component storybook, you only need
+      //* ComponentLibraryLocalizations.delegate along with the default ones.
+      localizationDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        ComponentLibraryLocalizations.delegate,
+      ],
       children: [
         //! 5. Provides the stories with 'theme'. Using the WonderTheme instance
         //! from ancestors in the storybook ensures that theme is unified across
