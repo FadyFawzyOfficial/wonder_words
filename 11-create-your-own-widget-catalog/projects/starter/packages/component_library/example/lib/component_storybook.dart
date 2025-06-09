@@ -17,9 +17,18 @@ class ComponentStorybook extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = WonderTheme.of(context);
     return Storybook(
+      //! 1. The children attribute gets a List<Story>. It’s better to keep the
+      //! stories in a separate file to avoid duplicating them when you decide
+      //! to add a CustomStorybook in addition to the default storybook.
       children: [
         ...getStories(theme),
       ],
+
+      //* 2. The flutter_storybook library converts the Story's name to hyphen-separated
+      //* lowercases words. For example, if you specify the Story's name as
+      //* Rounded Choice Chip, its route becomes rounded-choice-chip. By giving
+      //* initialRoute, you ensure a specific story is the current story.
+      //* If you don't set initialRoute, you see a Select story message.
       initialRoute: 'rounded-choice-chip',
     );
   }
