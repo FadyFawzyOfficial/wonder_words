@@ -103,10 +103,8 @@ class QuoteDetailsView extends StatelessWidget {
                                 cubit.refetch();
                               },
                             )
-                          : // TODO: replace with centered circular progress indicator
-                          const Center(
-                              child: CircularProgressIndicator(),
-                            ),
+                          : // Completed: replace with centered circular progress indicator
+                          const CenteredCircularProgressIndicator(),
                 ),
               ),
             ),
