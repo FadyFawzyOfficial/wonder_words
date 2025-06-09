@@ -4,7 +4,22 @@ import 'package:storybook_flutter/storybook_flutter.dart';
 
 List<Story> getStories(WonderThemeData theme) {
   return [
-    // TODO: Add Simple Expanded Elevated Button Story here
+    // Completed: Add Simple Expanded Elevated Button Story here
+    //? 1. Use simple named constructor and provides a name and section to the
+    //? Story. This name becomes the title of ListTile in the stories list,
+    //? and section becomes the title of the ExpansionTile
+    Story.simple(
+      name: 'Simple Expanded Elevated Button',
+      section: 'Buttons',
+      //! 2. As child, you provide the widget you want to show in the storybook.
+      //! In this specific example, this widget is ExpandedElevatedButton, which
+      //! has 2 required attributes
+      child: ExpandedElevatedButton(
+        label: 'Press me',
+        onTap: () {},
+      ),
+      // ToDo: add additional attributes to the story later
+    ),
     // TODO: Add Complex Expanded Elevated Button Story here
     Story(
       name: 'InProgress Expanded Elevated Button',
