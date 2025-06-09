@@ -15,12 +15,22 @@ class ComponentStorybook extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //! 3. Fetches the WonderTheme instance from ancestors. You’ll provide
+    //! WonderTheme from main.dart later.
     final theme = WonderTheme.of(context);
     return Storybook(
+      //* 4. Provides light and dark themes to the storybook. The storybook’s widget also
+      //* allows you to specify themeMode , which is set to ThemeMode.system by default.
+      theme: lightThemeData,
+      darkTheme: darkThemeData,
       //! 1. The children attribute gets a List<Story>. It’s better to keep the
       //! stories in a separate file to avoid duplicating them when you decide
       //! to add a CustomStorybook in addition to the default storybook.
+      // ToDo: add localization delegates
       children: [
+        //! 5. Provides the stories with 'theme'. Using the WonderTheme instance
+        //! from ancestors in the storybook ensures that theme is unified across
+        //! your main app and the storybook app.
         ...getStories(theme),
       ],
 
