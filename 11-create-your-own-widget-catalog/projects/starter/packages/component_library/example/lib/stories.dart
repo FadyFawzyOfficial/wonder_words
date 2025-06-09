@@ -18,7 +18,9 @@ List<Story> getStories(WonderThemeData theme) {
         label: 'Press me',
         onTap: () {},
       ),
-      // ToDo: add additional attributes to the story later
+      // Completed: add additional attributes to the story later
+      padding: const EdgeInsets.all(64),
+      background: Colors.cyanAccent,
     ),
     // TODO: Add Complex Expanded Elevated Button Story here
     Story(
