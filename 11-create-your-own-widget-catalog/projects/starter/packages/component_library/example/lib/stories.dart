@@ -115,8 +115,14 @@ List<Story> getStories(WonderThemeData theme) {
       name: 'Upvote Icon Button',
       section: 'Count Indicator Buttons',
       builder: (_, k) => UpvoteIconButton(
-        // TODO: replace with implementation of int knob
-        count: 2,
+        // Completed: replace with implementation of int knob
+        count: k.sliderInt(
+          label: 'count',
+          min: 0,
+          max: 10,
+          initial: 0,
+          divisions: 9,
+        ),
         onTap: () {},
         isUpvoted: k.boolean(
           label: 'isUpvoted',
