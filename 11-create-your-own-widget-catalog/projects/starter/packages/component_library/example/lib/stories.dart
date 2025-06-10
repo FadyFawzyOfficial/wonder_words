@@ -4,8 +4,49 @@ import 'package:storybook_flutter/storybook_flutter.dart';
 
 List<Story> getStories(WonderThemeData theme) {
   return [
-    // TODO: Add Simple Expanded Elevated Button Story here
-    // TODO: Add Complex Expanded Elevated Button Story here
+    // Completed: Add Simple Expanded Elevated Button Story here
+    //? 1. Use simple named constructor and provides a name and section to the
+    //? Story. This name becomes the title of ListTile in the stories list,
+    //? and section becomes the title of the ExpansionTile
+    Story.simple(
+      name: 'Simple Expanded Elevated Button',
+      section: 'Buttons',
+      //! 2. As child, you provide the widget you want to show in the storybook.
+      //! In this specific example, this widget is ExpandedElevatedButton, which
+      //! has 2 required attributes
+      child: ExpandedElevatedButton(
+        label: 'Press me',
+        onTap: () {},
+      ),
+      // Completed: add additional attributes to the story later
+      padding: const EdgeInsets.all(64),
+      background: Colors.cyanAccent,
+    ),
+    // Completed: Add Complex Expanded Elevated Button Story here
+    Story(
+      name: 'Expanded Elevated Button',
+      section: 'Buttons',
+      builder: (context, kb) => ExpandedElevatedButton(
+        label: kb.text(
+          //! Provides a label to the text field for the knobs panel.
+          label: 'label',
+          //! Gives an initial value to the text field
+          initial: 'Press me',
+        ),
+        onTap: kb.boolean(label: 'onTap', initial: true) ? () {} : null,
+        icon: Icon(
+          kb.options(
+            label: 'icon',
+            initial: Icons.home_rounded,
+            options: [
+              const Option('Login', Icons.login),
+              const Option('Refresh', Icons.refresh),
+              const Option('Logout', Icons.logout),
+            ],
+          ),
+        ),
+      ),
+    ),
     Story(
       name: 'InProgress Expanded Elevated Button',
       section: 'Buttons',
@@ -74,8 +115,14 @@ List<Story> getStories(WonderThemeData theme) {
       name: 'Upvote Icon Button',
       section: 'Count Indicator Buttons',
       builder: (_, k) => UpvoteIconButton(
-        // TODO: replace with implementation of int knob
-        count: 2,
+        // Completed: replace with implementation of int knob
+        count: k.sliderInt(
+          label: 'count',
+          min: 0,
+          max: 10,
+          initial: 0,
+          divisions: 9,
+        ),
         onTap: () {},
         isUpvoted: k.boolean(
           label: 'isUpvoted',
@@ -125,7 +172,17 @@ List<Story> getStories(WonderThemeData theme) {
     Story(
       name: 'Quotes in List',
       section: 'Quote',
-      // TODO: add wrapper builder for quotes list
+      // Completed: add wrapper builder for quotes list
+      //* 1. Wraps the QuoteCard in ListView with 15 items
+      wrapperBuilder: (context, story, child) => Padding(
+        padding: const EdgeInsets.all(8),
+        child: ListView.separated(
+          itemCount: 15,
+          //* 2. The widget returned by builder is the initial child.
+          itemBuilder: (_, __) => child,
+          separatorBuilder: (_, __) => const Divider(height: 16),
+        ),
+      ),
       builder: (_, k) => QuoteCard(
         isFavorite: k.boolean(
           label: 'Is Favorite',
