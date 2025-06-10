@@ -1,0 +1,15 @@
+{
+    "configurations": [
+        {
+            "name": "WondersWords",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "args": [
+                "--dart-define",
+                "fav-qs-app-token=2ab722d972da362dfcca10bc7f329021",
+                "--no-enable-impeller"
+            ]
+        }
+    ]
+}
