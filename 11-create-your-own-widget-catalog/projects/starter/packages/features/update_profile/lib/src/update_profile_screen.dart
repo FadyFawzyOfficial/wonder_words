@@ -254,10 +254,8 @@ class _UpdateProfileFormState extends State<_UpdateProfileForm> {
             ],
           );
         } else {
-          // TODO: replace with centered circular progress indicator
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          // Completed: replace with centered circular progress indicator
+          return const CenteredCircularProgressIndicator();
         }
       },
     );

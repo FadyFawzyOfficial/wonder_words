@@ -1,5 +1,7 @@
 import 'sign_in_localizations.dart';
 
+// ignore_for_file: type=lint
+
 /// The translations for English (`en`).
 class SignInLocalizationsEn extends SignInLocalizations {
   SignInLocalizationsEn([String locale = 'en']) : super(locale);
@@ -23,12 +25,10 @@ class SignInLocalizationsEn extends SignInLocalizations {
   String get passwordTextFieldLabel => 'Password';
 
   @override
-  String get passwordTextFieldEmptyErrorMessage =>
-      'Your password can\'t be empty.';
+  String get passwordTextFieldEmptyErrorMessage => 'Your password can\'t be empty.';
 
   @override
-  String get passwordTextFieldInvalidErrorMessage =>
-      'Password must be at least five characters long.';
+  String get passwordTextFieldInvalidErrorMessage => 'Password must be at least five characters long.';
 
   @override
   String get forgotMyPasswordButtonLabel => 'Forgot my password';
