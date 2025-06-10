@@ -110,7 +110,27 @@ List<Story> getStories(WonderThemeData theme) {
         ),
       ),
     ),
-    // TODO: Challenge.
+    // Completed: Challenge.
+    //! Add a new story for the Downvote Icon Button component and make all its
+    //! attributes configurable in the knob panel.
+    Story(
+      name: 'Downvote Icon Button',
+      section: 'Count Indicator Buttons',
+      builder: (context, kb) => DownvoteIconButton(
+        count: kb.sliderInt(
+          label: 'count',
+          min: 0,
+          max: 10,
+          initial: 5,
+          divisions: 9,
+        ),
+        onTap: () {},
+        isDownvoted: kb.boolean(
+          label: 'isDownvoted',
+          initial: false,
+        ),
+      ),
+    ),
     Story(
       name: 'Upvote Icon Button',
       section: 'Count Indicator Buttons',
