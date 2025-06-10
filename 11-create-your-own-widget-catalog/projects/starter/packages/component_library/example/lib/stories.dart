@@ -172,7 +172,17 @@ List<Story> getStories(WonderThemeData theme) {
     Story(
       name: 'Quotes in List',
       section: 'Quote',
-      // TODO: add wrapper builder for quotes list
+      // Completed: add wrapper builder for quotes list
+      //* 1. Wraps the QuoteCard in ListView with 15 items
+      wrapperBuilder: (context, story, child) => Padding(
+        padding: const EdgeInsets.all(8),
+        child: ListView.separated(
+          itemCount: 15,
+          //* 2. The widget returned by builder is the initial child.
+          itemBuilder: (_, __) => child,
+          separatorBuilder: (_, __) => const Divider(height: 16),
+        ),
+      ),
       builder: (_, k) => QuoteCard(
         isFavorite: k.boolean(
           label: 'Is Favorite',
