@@ -22,7 +22,31 @@ List<Story> getStories(WonderThemeData theme) {
       padding: const EdgeInsets.all(64),
       background: Colors.cyanAccent,
     ),
-    // TODO: Add Complex Expanded Elevated Button Story here
+    // Completed: Add Complex Expanded Elevated Button Story here
+    Story(
+      name: 'Expanded Elevated Button',
+      section: 'Buttons',
+      builder: (context, kb) => ExpandedElevatedButton(
+        label: kb.text(
+          //! Provides a label to the text field for the knobs panel.
+          label: 'label',
+          //! Gives an initial value to the text field
+          initial: 'Press me',
+        ),
+        onTap: kb.boolean(label: 'onTap', initial: true) ? () {} : null,
+        icon: Icon(
+          kb.options(
+            label: 'icon',
+            initial: Icons.home_rounded,
+            options: [
+              const Option('Login', Icons.login),
+              const Option('Refresh', Icons.refresh),
+              const Option('Logout', Icons.logout),
+            ],
+          ),
+        ),
+      ),
+    ),
     Story(
       name: 'InProgress Expanded Elevated Button',
       section: 'Buttons',
