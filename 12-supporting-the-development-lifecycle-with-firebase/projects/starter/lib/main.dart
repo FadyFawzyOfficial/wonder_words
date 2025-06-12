@@ -72,7 +72,12 @@ class _WonderWordsState extends State<WonderWords> {
 
   late final RoutemasterDelegate _routerDelegate = RoutemasterDelegate(
     observers: [
-      // TODO: add observers to RoutemasterDelegate
+      // Completed: add observers to RoutemasterDelegate
+      //! With that, you’ve added an observer to RoutemasterDelegate , which tracks
+      //! navigation from one screen to another. You can see that the observers
+      //! attribute is a type of List , which means that you could add multiple observers
+      //! to observe users navigating from screen to screen.
+      ScreenViewObserver(analyticsService: _analyticsService)
     ],
     routesBuilder: (context) {
       return RouteMap(
