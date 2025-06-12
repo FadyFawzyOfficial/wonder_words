@@ -9,7 +9,17 @@ class ScreenViewObserver extends RoutemasterObserver {
 
   final AnalyticsService analyticsService;
 
-  // TODO: add _sendScreenView() helper method
+  // Completed: add _sendScreenView() helper method
+  void _sendScreenView(PageRoute<dynamic> route) {
+    //* 1. Extracts the name of the screen form route settings
+    final screenName = route.settings.name;
+
+    //! 2. Once verified that the screen name is non-null, you record the screen
+    //! view event by invoking the predefined setCurrentScreen method.
+    if (screenName != null) {
+      analyticsService.setCurrentScreen(screenName);
+    }
+  }
 
   // TODO: override didPush and didPop method
 }
