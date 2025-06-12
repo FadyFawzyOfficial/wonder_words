@@ -11,7 +11,7 @@ void main() {
     app.main();
     await tester.pumpAndSettle(const Duration(seconds: 1));
 
-    final searchBarFinder = find.byType(SearchBar);
+    final searchBarFinder = find.byType(AppSearchBar);
 
     expect(searchBarFinder, findsOneWidget);
 
