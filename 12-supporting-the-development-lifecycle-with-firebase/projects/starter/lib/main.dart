@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:isolate';
 
 import 'package:component_library/component_library.dart';
 import 'package:domain_models/domain_models.dart';
@@ -32,7 +31,15 @@ void main() async {
   // by calling Future<void> initializeMonitoringPackage() => Firebase.initializeApp(); .
   await initializeMonitoringPackage();
 
-  // TODO: Perform explicit crash
+  // Completed: Perform explicit crash
+  //! With this code, you’ll explicitly crash the app.
+  //! Now, restart the app, and the app should crash.
+  //* Note: Don’t forget to remove the code above from your project when you’re
+  //* finished testing this feature. You won’t need it anymore in the future,
+  //* so you may delete the whole explicit_crash.dart file and its export in
+  //* monitoring.dart.
+  final explicitCrash = ExplicitCrash();
+  explicitCrash.crashTheApp();
 
   // TODO: Add Error reporting
 
