@@ -23,16 +23,20 @@ import 'package:wonder_words/screen_view_observer.dart';
 
 // TODO: replace the implementation of main() function
 void main() async {
-  // 1
+  // 1. Ensures 'WidgetsFlutterBinding' initialization. When initializing a Firebase
+  // app, the app interacts with its native layers through asynchronous operation.
+  // This happens via platform channels.
   WidgetsFlutterBinding.ensureInitialized();
-  // 2
+
+  // 2. Initializes the Firebase core services, which are defined in monitoring.dart
+  // by calling Future<void> initializeMonitoringPackage() => Firebase.initializeApp(); .
   await initializeMonitoringPackage();
 
   // TODO: Perform explicit crash
 
   // TODO: Add Error reporting
 
-  // the following line of code will be relavant for next chapter
+  // the following line of code will be relevant for next chapter
   final remoteValueService = RemoteValueService();
   await remoteValueService.load();
   runApp(
