@@ -15,9 +15,9 @@ class ErrorReportingService {
       _crashlytics.recordFlutterError(flutterErrorDetails);
 
   // 3. Defines the method for recording other errors.
-  Future<void> recordError({
+  Future<void> recordError(
     dynamic exception,
-    StackTrace? stack,
+    StackTrace? stack, {
     bool fatal = false,
   }) {
     return _crashlytics.recordError(
