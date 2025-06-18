@@ -21,23 +21,49 @@ import 'package:wonder_words/l10n/app_localizations.dart';
 import 'package:wonder_words/routing_table.dart';
 import 'package:wonder_words/screen_view_observer.dart';
 
-// TODO: replace the implementation of main() function
+// Completed: replace the implementation of main() function
 void main() async {
-  // 1
-  WidgetsFlutterBinding.ensureInitialized();
-  // 2
-  await initializeMonitoringPackage();
+  //* 1. Initialize an instance of `ErrorReportingService`, which you defined in
+  //* the previous section.
+  //! Has to be late so it doesn't instantiate before the
+  //! `initializeMonitoringPackage()` call.
+  late final errorReportingService = ErrorReportingService();
 
-  // TODO: Perform explicit crash
+  //! 2. The whole content of the main() function is wrapped with the
+  //! `runZonedGuarded()` function, which enables you to report zoned errors.
+  runZonedGuarded<Future<void>>(
+    () async {
+      //* 3. You have to ensure the binding of the widgets with the native layers
+      //* and initialize Firebase Core services.
+      WidgetsFlutterBinding.ensureInitialized();
+      await initializeMonitoringPackage();
+      final remoteValueService = RemoteValueService();
+      await remoteValueService.load();
 
-  // TODO: Add Error reporting
+      //! 4. This is a lambda expression that invokes the `recordFlutterError`
+      //! method with the `FlutterErrorDetails` that holds the stack trace,
+      //! exception details, etc. It records the Flutter framework errors.
+      FlutterError.onError = errorReportingService.recordFlutterError;
 
-  // the following line of code will be relavant for next chapter
-  final remoteValueService = RemoteValueService();
-  await remoteValueService.load();
-  runApp(
-    WonderWords(
-      remoteValueService: remoteValueService,
+      //! 5. This handles the error outside of Flutter context.
+      Isolate.current.addErrorListener(
+        RawReceivePort((pair) async {
+          final List<dynamic> errorAndStacktrace = pair;
+          await errorReportingService.recordError(
+            errorAndStacktrace.first,
+            errorAndStacktrace.last,
+          );
+        }).sendPort,
+      );
+
+      runApp(WonderWords(remoteValueService: remoteValueService));
+    },
+
+    //! 6. This catches and reports the error that happen asynchronously - zoned errors.
+    (error, stack) => errorReportingService.recordError(
+      error,
+      stack,
+      fatal: true,
     ),
   );
 }
@@ -58,21 +84,26 @@ class _WonderWordsState extends State<WonderWords> {
   final _keyValueStorage = KeyValueStorage();
   final _analyticsService = AnalyticsService();
   final _dynamicLinkService = DynamicLinkService();
-  late final _favQsApi = FavQsApi(
+  late final FavQsApi _favQsApi = FavQsApi(
     userTokenSupplier: () => _userRepository.getUserToken(),
   );
   late final _quoteRepository = QuoteRepository(
     remoteApi: _favQsApi,
     keyValueStorage: _keyValueStorage,
   );
-  late final _userRepository = UserRepository(
+  late final UserRepository _userRepository = UserRepository(
     remoteApi: _favQsApi,
     noSqlStorage: _keyValueStorage,
   );
 
-  late final _routerDelegate = RoutemasterDelegate(
+  late final RoutemasterDelegate _routerDelegate = RoutemasterDelegate(
     observers: [
-      // TODO: add observers to RoutemasterDelegate
+      // Completed: add observers to RoutemasterDelegate
+      //! With that, you’ve added an observer to RoutemasterDelegate , which tracks
+      //! navigation from one screen to another. You can see that the observers
+      //! attribute is a type of List , which means that you could add multiple observers
+      //! to observe users navigating from screen to screen.
+      ScreenViewObserver(analyticsService: _analyticsService)
     ],
     routesBuilder: (context) {
       return RouteMap(
