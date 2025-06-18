@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:isolate';
 
 import 'package:component_library/component_library.dart';
 import 'package:domain_models/domain_models.dart';
@@ -20,35 +21,49 @@ import 'package:wonder_words/l10n/app_localizations.dart';
 import 'package:wonder_words/routing_table.dart';
 import 'package:wonder_words/screen_view_observer.dart';
 
-// TODO: replace the implementation of main() function
+// Completed: replace the implementation of main() function
 void main() async {
-  // 1. Ensures 'WidgetsFlutterBinding' initialization. When initializing a Firebase
-  // app, the app interacts with its native layers through asynchronous operation.
-  // This happens via platform channels.
-  WidgetsFlutterBinding.ensureInitialized();
+  //* 1. Initialize an instance of `ErrorReportingService`, which you defined in
+  //* the previous section.
+  //! Has to be late so it doesn't instantiate before the
+  //! `initializeMonitoringPackage()` call.
+  late final errorReportingService = ErrorReportingService();
 
-  // 2. Initializes the Firebase core services, which are defined in monitoring.dart
-  // by calling Future<void> initializeMonitoringPackage() => Firebase.initializeApp(); .
-  await initializeMonitoringPackage();
+  //! 2. The whole content of the main() function is wrapped with the
+  //! `runZonedGuarded()` function, which enables you to report zoned errors.
+  runZonedGuarded<Future<void>>(
+    () async {
+      //* 3. You have to ensure the binding of the widgets with the native layers
+      //* and initialize Firebase Core services.
+      WidgetsFlutterBinding.ensureInitialized();
+      await initializeMonitoringPackage();
+      final remoteValueService = RemoteValueService();
+      await remoteValueService.load();
 
-  // Completed: Perform explicit crash
-  //! With this code, you’ll explicitly crash the app.
-  //! Now, restart the app, and the app should crash.
-  //* Note: Don’t forget to remove the code above from your project when you’re
-  //* finished testing this feature. You won’t need it anymore in the future,
-  //* so you may delete the whole explicit_crash.dart file and its export in
-  //* monitoring.dart.
-  final explicitCrash = ExplicitCrash();
-  explicitCrash.crashTheApp();
+      //! 4. This is a lambda expression that invokes the `recordFlutterError`
+      //! method with the `FlutterErrorDetails` that holds the stack trace,
+      //! exception details, etc. It records the Flutter framework errors.
+      FlutterError.onError = errorReportingService.recordFlutterError;
 
-  // TODO: Add Error reporting
+      //! 5. This handles the error outside of Flutter context.
+      Isolate.current.addErrorListener(
+        RawReceivePort((pair) async {
+          final List<dynamic> errorAndStacktrace = pair;
+          await errorReportingService.recordError(
+            errorAndStacktrace.first,
+            errorAndStacktrace.last,
+          );
+        }).sendPort,
+      );
 
-  // the following line of code will be relevant for next chapter
-  final remoteValueService = RemoteValueService();
-  await remoteValueService.load();
-  runApp(
-    WonderWords(
-      remoteValueService: remoteValueService,
+      runApp(WonderWords(remoteValueService: remoteValueService));
+    },
+
+    //! 6. This catches and reports the error that happen asynchronously - zoned errors.
+    (error, stack) => errorReportingService.recordError(
+      error,
+      stack,
+      fatal: true,
     ),
   );
 }
