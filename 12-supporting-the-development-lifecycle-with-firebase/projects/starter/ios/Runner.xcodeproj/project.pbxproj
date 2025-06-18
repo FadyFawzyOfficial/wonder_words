@@ -128,6 +128,7 @@
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				2A61EAEDE35F29C988702B6A /* [CP] Embed Pods Frameworks */,
+				052ECF482E017DB800A1FF82 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -187,6 +188,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		052ECF482E017DB800A1FF82 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "$PODS_ROOT/FirebaseCrashlytics/upload-symbols --build-phase --validate -ai 1:524605828268:ios:db9e04d668b5776f14c309\n$PODS_ROOT/FirebaseCrashlytics/upload-symbols --build-phase -ai 1:524605828268:ios:db9e04d668b5776f14c309\n";
+		};
 		2A61EAEDE35F29C988702B6A /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
