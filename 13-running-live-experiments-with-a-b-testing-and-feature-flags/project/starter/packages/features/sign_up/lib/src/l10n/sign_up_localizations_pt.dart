@@ -1,5 +1,7 @@
 import 'sign_up_localizations.dart';
 
+// ignore_for_file: type=lint
+
 /// The translations for Portuguese (`pt`).
 class SignUpLocalizationsPt extends SignUpLocalizations {
   SignUpLocalizationsPt([String locale = 'pt']) : super(locale);
@@ -17,16 +19,13 @@ class SignUpLocalizationsPt extends SignUpLocalizations {
   String get usernameTextFieldLabel => 'Usuário';
 
   @override
-  String get usernameTextFieldEmptyErrorMessage =>
-      'Seu usuário não pode ser vazio.';
+  String get usernameTextFieldEmptyErrorMessage => 'Seu usuário não pode ser vazio.';
 
   @override
-  String get usernameTextFieldInvalidErrorMessage =>
-      'Seu usuário precisa ter entre 1 e 20 caracteres e pode conter apenas letras, números, e underline (_).';
+  String get usernameTextFieldInvalidErrorMessage => 'Seu usuário precisa ter entre 1 e 20 caracteres e pode conter apenas letras, números, e underline (_).';
 
   @override
-  String get usernameTextFieldAlreadyTakenErrorMessage =>
-      'Esse usuário já está cadastrado.';
+  String get usernameTextFieldAlreadyTakenErrorMessage => 'Este usuário já está cadastrado.';
 
   @override
   String get emailTextFieldLabel => 'Email';
@@ -35,31 +34,26 @@ class SignUpLocalizationsPt extends SignUpLocalizations {
   String get emailTextFieldEmptyErrorMessage => 'Seu email não pode ser vazio.';
 
   @override
-  String get emailTextFieldInvalidErrorMessage => 'Esse email não é válido.';
+  String get emailTextFieldInvalidErrorMessage => 'Este email não é válido.';
 
   @override
-  String get emailTextFieldAlreadyRegisteredErrorMessage =>
-      'Esse email já está cadastrado.';
+  String get emailTextFieldAlreadyRegisteredErrorMessage => 'Este email já está cadastrado.';
 
   @override
   String get passwordTextFieldLabel => 'Senha';
 
   @override
-  String get passwordTextFieldEmptyErrorMessage =>
-      'Sua senha não pode ser vazia.';
+  String get passwordTextFieldEmptyErrorMessage => 'Sua senha não pode ser vazia.';
 
   @override
-  String get passwordTextFieldInvalidErrorMessage =>
-      'Sua senha precisa ter pelo menos cinco caracteres.';
+  String get passwordTextFieldInvalidErrorMessage => 'Sua senha precisa ter pelo menos cinco caracteres.';
 
   @override
   String get passwordConfirmationTextFieldLabel => 'Confirmação de Senha';
 
   @override
-  String get passwordConfirmationTextFieldEmptyErrorMessage =>
-      'Não pode ser vazia.';
+  String get passwordConfirmationTextFieldEmptyErrorMessage => 'Não pode ser vazia.';
 
   @override
-  String get passwordConfirmationTextFieldInvalidErrorMessage =>
-      'Suas senhas precisam ser iguais.';
+  String get passwordConfirmationTextFieldInvalidErrorMessage => 'Suas senhas precisam ser iguais.';
 }
