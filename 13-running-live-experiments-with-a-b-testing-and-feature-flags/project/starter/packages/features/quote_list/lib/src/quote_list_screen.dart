@@ -144,7 +144,7 @@ class _QuoteListViewState extends State<QuoteListView> {
                     padding: EdgeInsets.symmetric(
                       horizontal: theme.screenMargin,
                     ),
-                    child: SearchBar(
+                    child: AppSearchBar(
                       controller: _searchBarController,
                     ),
                   ),
