@@ -79,9 +79,12 @@ class DarkWonderThemeData extends WonderThemeData {
   @override
   ThemeData get materialThemeData => ThemeData(
         brightness: Brightness.dark,
-        toggleableActiveColor: Colors.white,
         primarySwatch: Colors.white.toMaterialColor(),
         dividerTheme: _dividerThemeData,
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: Colors.white.toMaterialColor(),
+          brightness: Brightness.dark,
+        ).copyWith(secondary: Colors.white), // Replaces
       );
 
   @override
