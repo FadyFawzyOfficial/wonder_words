@@ -23,6 +23,10 @@ class RemoteValueService {
     //! Therefore, you set the grid_quotes_view_enabled parameter to true.
     //! Remember, you’ve set the value of this same parameter to false in the
     //! Remote Config console, which means this will be overridden when you publish the changes.
+    // await _remoteConfig.setConfigSettings(RemoteConfigSettings(
+    //   fetchTimeout: const Duration(seconds: 10),
+    //   minimumFetchInterval: const Duration(seconds: 0),
+    // ));
     await _remoteConfig.setDefaults({_gridQuotesViewEnabledKey: true});
     await _remoteConfig.fetchAndActivate();
   }
