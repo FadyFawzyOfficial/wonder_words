@@ -144,7 +144,7 @@ class _QuoteListViewState extends State<QuoteListView> {
                     padding: EdgeInsets.symmetric(
                       horizontal: theme.screenMargin,
                     ),
-                    child: SearchBar(
+                    child: AppSearchBar(
                       controller: _searchBarController,
                     ),
                   ),
@@ -162,11 +162,16 @@ class _QuoteListViewState extends State<QuoteListView> {
                         final stateChangeFuture = _bloc.stream.first;
                         return stateChangeFuture;
                       },
-                      // TODO: display different UI based on the value of grid_quotes_view_enabled parameter
-                      child: QuotePagedGridView(
-                        pagingController: _pagingController,
-                        onQuoteSelected: widget.onQuoteSelected,
-                      ),
+                      // Completed: display different UI based on the value of grid_quotes_view_enabled parameter
+                      child: widget.remoteValueService.isGridQuotesViewEnabled
+                          ? QuotePagedGridView(
+                              pagingController: _pagingController,
+                              onQuoteSelected: widget.onQuoteSelected,
+                            )
+                          : QuotePagedListView(
+                              pagingController: _pagingController,
+                              onQuoteSelected: widget.onQuoteSelected,
+                            ),
                     ),
                   ),
                 ],

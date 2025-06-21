@@ -32,7 +32,8 @@ void main() async {
       await initializeMonitoringPackage();
 
       final remoteValueService = RemoteValueService();
-      // TODO: add loading feature flags from remote config
+      // Completed: add loading feature flags from remote config
+      await remoteValueService.load();
 
       FlutterError.onError = errorReportingService.recordFlutterError;
 
@@ -76,19 +77,19 @@ class _WonderWordsState extends State<WonderWords> {
   final _keyValueStorage = KeyValueStorage();
   final _analyticsService = AnalyticsService();
   final _dynamicLinkService = DynamicLinkService();
-  late final _favQsApi = FavQsApi(
+  late final FavQsApi _favQsApi = FavQsApi(
     userTokenSupplier: () => _userRepository.getUserToken(),
   );
   late final _quoteRepository = QuoteRepository(
     remoteApi: _favQsApi,
     keyValueStorage: _keyValueStorage,
   );
-  late final _userRepository = UserRepository(
+  late final UserRepository _userRepository = UserRepository(
     remoteApi: _favQsApi,
     noSqlStorage: _keyValueStorage,
   );
 
-  late final _routerDelegate = RoutemasterDelegate(
+  late final RoutemasterDelegate _routerDelegate = RoutemasterDelegate(
     observers: [
       ScreenViewObserver(
         analyticsService: _analyticsService,
