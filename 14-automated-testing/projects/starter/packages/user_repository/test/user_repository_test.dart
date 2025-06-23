@@ -1,9 +1,13 @@
-// TODO: add missing packages and an annotation to generate the mock
+// Completed: add missing packages and an annotation to generate the mock
 import 'package:fav_qs_api/fav_qs_api.dart';
 import 'package:key_value_storage/key_value_storage.dart';
+import 'package:mockito/annotations.dart';
 import 'package:test/test.dart';
+import 'package:user_repository/src/user_secure_storage.dart';
 import 'package:user_repository/user_repository.dart';
 
+//! You can generate a mock class for UserSecureStorage with this following annotation.
+@GenerateMocks([UserSecureStorage])
 void main() {
   // Completed: add an implementation for UserRepository.getUserToken() test
   test(
