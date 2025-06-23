@@ -34,11 +34,15 @@ void main() {
         remoteApi: FavQsApi(userTokenSupplier: () => Future.value()),
       );
 
+      // Completed: add stubbing for fetching token from secure storage
+      //! This function is quite intuitive. When you call getUserToken() inside
+      //! your mock object, it returns the token you hardcoded to token.
+      //* Run the test again, and it'll work like a charm.
+      when(_userSecureStorage.getUserToken()).thenAnswer((_) async => 'token');
+
       expect(await _userRepository.getUserToken(), 'token');
     },
   );
-
-  // TODO: add stubbing for fetching token from secure storage
 
   // Challenge
 }
