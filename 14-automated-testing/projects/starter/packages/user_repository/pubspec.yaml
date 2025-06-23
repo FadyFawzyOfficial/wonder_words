@@ -20,3 +20,6 @@ dev_dependencies:
   test: ^1.16.8
   lints: ^1.0.1
   build_runner: ^2.0.5
+
+dependency_overrides:
+  analyzer: ^6.2.0
