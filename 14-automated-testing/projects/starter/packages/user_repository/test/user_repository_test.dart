@@ -2,9 +2,12 @@
 import 'package:fav_qs_api/fav_qs_api.dart';
 import 'package:key_value_storage/key_value_storage.dart';
 import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 import 'package:user_repository/src/user_secure_storage.dart';
 import 'package:user_repository/user_repository.dart';
+
+import 'user_repository_test.mocks.dart';
 
 //! You can generate a mock class for UserSecureStorage with this following annotation.
 @GenerateMocks([UserSecureStorage])
@@ -13,7 +16,8 @@ void main() {
   test(
     'When calling getUserToken after successful authentication, return authentication token',
     () async {
-      // ToDo: add initialization of _userSecureStorage
+      // Completed: add initialization of _userSecureStorage
+      final _userSecureStorage = MockUserSecureStorage();
 
       // Completed: add initialization of _userRepository
       //* UserRepository's constructor requires two parameters — noSqlStorage and remoteApi.
@@ -25,7 +29,7 @@ void main() {
       //* any unexpected behavior of other units with which the testing component interacts.
       //! To take control over the behavior of this object, you’ll make a mock for UserSecureStorage.
       final _userRepository = UserRepository(
-        // secureStorage: _userSecureStorage,
+        secureStorage: _userSecureStorage,
         noSqlStorage: KeyValueStorage(),
         remoteApi: FavQsApi(userTokenSupplier: () => Future.value()),
       );
