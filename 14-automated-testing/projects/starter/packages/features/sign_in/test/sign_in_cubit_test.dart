@@ -1,7 +1,12 @@
-// TODO: add missing imports and a mock class for UserRepository
+// Completed: add missing imports and a mock class for UserRepository
 import 'package:bloc_test/bloc_test.dart';
 import 'package:form_fields/form_fields.dart';
+import 'package:mockito/mockito.dart';
 import 'package:sign_in/src/sign_in_cubit.dart';
+import 'package:user_repository/user_repository.dart';
+
+//! This creates a mock for UserRepository.
+class MockUserRepository extends Mock implements UserRepository {}
 
 void main() {
   // Completed: add an implementation of BloC test
