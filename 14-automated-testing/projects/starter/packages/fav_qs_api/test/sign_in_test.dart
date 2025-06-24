@@ -37,7 +37,27 @@ void main() {
       ),
     ).toJson();
 
-    // TODO: add an implementation of request stubbing
+    // Completed: add an implementation of request stubbing
+    //! The implementation of this code is again quite intuitive. When performing
+    //! the POST request using presanctified parameters, after a 1 second delay,
+    //! dioAdapter will stub - imitate the successful response.
+    //! Check the FavQs API `https://favqs.com/api` under the “Create session” section,
+    //! and you may see that the response body of the stubbed response perfectly
+    //! matches the response body of the API definition.
+    //! The only thing left is to run the test.
+    dioAdapter.onPost(
+      url,
+      (server) => server.reply(
+        200,
+        {
+          'User-Token': 'token',
+          'login': 'login',
+          'email': 'email',
+        },
+        delay: const Duration(seconds: 1),
+      ),
+      data: requestJsonBody,
+    );
 
     //! 4. Evaluates if the tested function returns the correct output.
     expect(await remoteApi.signIn(email, password), isA<UserRM>());
