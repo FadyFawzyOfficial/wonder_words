@@ -2,7 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:fav_qs_api/src/fav_qs_api.dart';
 import 'package:fav_qs_api/src/models/models.dart';
 import 'package:fav_qs_api/src/url_builder.dart';
-// TODO: add missing import
+// Completed: add missing import
+import 'package:http_mock_adapter/http_mock_adapter.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -13,7 +14,10 @@ void main() {
     //* HTTP requests.
     final dio = Dio(BaseOptions());
 
-    // TODO: add dioAdapter which will stub the expected response of remote API
+    // Completed: add dioAdapter which will stub the expected response of remote API
+    //! This initializes the DioAdapter object, which will be used later to stub
+    //! the behavior of successful response.
+    final dioAdapter = DioAdapter(dio: dio);
 
     //* 2. Initialize the remote API and provides the required testing attributes.
     final remoteApi =
