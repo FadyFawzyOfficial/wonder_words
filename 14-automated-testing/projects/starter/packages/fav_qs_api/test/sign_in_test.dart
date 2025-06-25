@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fav_qs_api/fav_qs_api.dart';
 import 'package:fav_qs_api/src/fav_qs_api.dart';
 import 'package:fav_qs_api/src/models/models.dart';
 import 'package:fav_qs_api/src/url_builder.dart';
@@ -7,7 +8,7 @@ import 'package:http_mock_adapter/http_mock_adapter.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('Test Sign In:', () async {
+  group('Test Sign In:', () {
     //* 1. Initializes an instance of the Dio object, which is required to preform
     //* HTTP requests.
     final dio = Dio(BaseOptions());
@@ -62,6 +63,26 @@ void main() {
 
       //! 4. Evaluates if the tested function returns the correct output.
       expect(await remoteApi.signIn(email, password), isA<UserRM>());
+    });
+
+    test(
+        'When user enters wrong credentials, throws InvalidCredentialsFavQsException',
+        () async {
+      dioAdapter.onPost(
+        url,
+        (server) => server.reply(
+          200,
+          {
+            'error_code': 21,
+            'message': 'Invalid login or password.',
+          },
+          delay: const Duration(seconds: 1),
+        ),
+        data: requestJsonBody,
+      );
+
+      expect(() async => await remoteApi.signIn(email, password),
+          throwsA(isA<InvalidCredentialsFavQsException>()));
     });
   });
 }
