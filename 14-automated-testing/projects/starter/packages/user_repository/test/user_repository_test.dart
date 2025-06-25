@@ -48,4 +48,17 @@ void main() {
   );
 
   // Challenge
+  //! Write a unit test for UserRepository ‘s getUserToken() function — for instance,
+  //! when the user isn’t authenticated yet.
+  test(
+    'When calling getUserToken before successful authentication, return authentication as empty String',
+    () async {
+      final _userRepository = UserRepository(
+        noSqlStorage: KeyValueStorage(),
+        remoteApi: FavQsApi(userTokenSupplier: () => Future.value()),
+      );
+
+      expect(await _userRepository.getUserToken(), '');
+    },
+  );
 }
