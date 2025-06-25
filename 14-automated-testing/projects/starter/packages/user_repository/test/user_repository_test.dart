@@ -56,6 +56,7 @@ void main() {
     test(
       'When calling getUserToken before successful authentication, return authentication as empty String',
       () async {
+        when(_userSecureStorage.getUserToken()).thenAnswer((_) async => '');
         expect(await _userRepository.getUserToken(), '');
       },
     );
