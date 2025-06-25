@@ -43,5 +43,20 @@ void main() {
         expect(value, true);
       },
     );
+
+    testWidgets(
+      'FavoriteIconButton uses outlined favorite icon when is not favorite',
+      (tester) async {
+        await tester.pumpWidget(const MaterialApp(
+          locale: Locale('en'),
+          localizationsDelegates: [ComponentLibraryLocalizations.delegate],
+          home: Scaffold(body: FavoriteIconButton(isFavorite: false)),
+        ));
+
+        final outlinedIconFinder = find.byIcon(Icons.favorite_border_outlined);
+
+        expect(outlinedIconFinder, findsOneWidget);
+      },
+    );
   });
 }
