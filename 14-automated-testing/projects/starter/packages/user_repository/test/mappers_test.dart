@@ -25,4 +25,11 @@ void main() {
   });
 
   // Challenge
+  test(
+    'When mapping DarkModePreference.alwaysDark to cache, return DarkModePreference.alwaysDark',
+    () {
+      final preference = DarkModePreference.alwaysDark;
+      expect(preference.toCacheModel(), DarkModePreferenceCM.alwaysDark);
+    },
+  );
 }
