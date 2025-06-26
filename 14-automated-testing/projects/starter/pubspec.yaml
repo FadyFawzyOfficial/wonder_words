@@ -60,7 +60,9 @@ dependencies:
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
-  # TODO: add missing package
+  # Completed: add missing package
+  integration_test:
+    sdk: flutter
   flutter_test:
     sdk: flutter
   flutter_lints: ^1.0.4

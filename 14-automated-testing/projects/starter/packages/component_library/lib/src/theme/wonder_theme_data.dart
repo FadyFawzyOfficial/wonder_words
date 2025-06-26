@@ -77,12 +77,17 @@ class LightWonderThemeData extends WonderThemeData {
 
 class DarkWonderThemeData extends WonderThemeData {
   @override
-  ThemeData get materialThemeData => ThemeData(
-        brightness: Brightness.dark,
-        toggleableActiveColor: Colors.white,
+  ThemeData get materialThemeData {
+    return ThemeData(
+      brightness: Brightness.dark,
+      primarySwatch: Colors.white.toMaterialColor(),
+      dividerTheme: _dividerThemeData,
+      colorScheme: ColorScheme.fromSwatch(
         primarySwatch: Colors.white.toMaterialColor(),
-        dividerTheme: _dividerThemeData,
-      );
+        brightness: Brightness.dark,
+      ).copyWith(secondary: Colors.white), // Replaces
+    );
+  }
 
   @override
   Color get roundedChoiceChipBackgroundColor => Colors.black;
