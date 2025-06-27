@@ -17,16 +17,49 @@ permissions: read-all
 
 #? 4. Lists the jobs that will run in this workflow.
 jobs:
-  # ToDo: Remove the example job after testing
-  #! 5. Defines the unique identifier for the job, Jobs from a single workflow run in
-  #! parallel unless you define that one job is a prerequisite for another one.
-  #! This is where those unique identifiers come in handy.
-  example:
-    name: Example of a job
-    #* 6. Specifies the OS for the machine on which the job will run.
+  # Completed: Remove the example job after testing
+  test:
+    name: Test
     runs-on: ubuntu-latest
-    #* 7. Lists the steps that will run in a predefined order.
     steps:
-      #* 8. Define the name of the step and command that will be executed
-      - name: Echo text
-        run: echo This\ is\ my\ first\ Github\ actions\ job
+      #* 1. Clones the Flutter, which is necessary to execute the tests.
+      - name: Clone flutter repository with master channel
+        uses: subosito/flutter-action@v2
+        with:
+          channel: master
+
+      #* 2. Runs Flutter doctor, which will install all the necessary development tools
+      - name: Run flutter doctor
+        run: flutter doctor -v
+      
+
+      #* 3. Checks out the code.
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      #* 4. Fetches the missing packages and runs make test, which will run tests in all packages
+      - name: Get all packages and test
+        run: make get && make testing
+
+  # ToDo: add a job for building Android app
+
+  
+  
+  
+  
+  
+  
+  
+  
+  # #! 5. Defines the unique identifier for the job, Jobs from a single workflow run in
+  # #! parallel unless you define that one job is a prerequisite for another one.
+  # #! This is where those unique identifiers come in handy.
+  # example:
+  #   name: Example of a job
+  #   #* 6. Specifies the OS for the machine on which the job will run.
+  #   runs-on: ubuntu-latest
+  #   #* 7. Lists the steps that will run in a predefined order.
+  #   steps:
+  #     #* 8. Define the name of the step and command that will be executed
+  #     - name: Echo text
+  #       run: echo This\ is\ my\ first\ Github\ actions\ job
