@@ -1,0 +1,32 @@
+#* 1. Defines the name for this specific workflow.
+name: Test, build and deploy
+
+#! 2. Specifies the events on which to execute this workflow. In this case,
+#! it will run when the pull request is merged to the develop branch as well as
+#! when new code is pushed to the develop branch.
+on:
+  pull_request:
+    branches:
+      - develop
+  push:
+    branches:
+      - develop
+
+#* 3. Defines the permission scope.
+permissions: read-all
+
+#? 4. Lists the jobs that will run in this workflow.
+jobs:
+  # ToDo: Remove the example job after testing
+  #! 5. Defines the unique identifier for the job, Jobs from a single workflow run in
+  #! parallel unless you define that one job is a prerequisite for another one.
+  #! This is where those unique identifiers come in handy.
+  example:
+    name: Example of a job
+    #* 6. Specifies the OS for the machine on which the job will run.
+    runs-on: ubuntu-latest
+    #* 7. Lists the steps that will run in a predefined order.
+    steps:
+      #* 8. Define the name of the step and command that will be executed
+      - name: Echo text
+        run: echo This\ is\ my\ first\ Github\ actions\ job
