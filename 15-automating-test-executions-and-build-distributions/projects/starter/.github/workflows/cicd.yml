@@ -83,13 +83,22 @@ jobs:
       - name: Build apk
         run: flutter build apk
       
+      #! Cache other folders (pub-cache and build folder)
+      # - name: Cache pub packages
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: |
+      #       ~/.pub-cache
+      #     key: ${{ runner.os }}-pub-${{ hashFiles('pubspec.lock') }}
+      #     restore-keys: ${{ runner.os }}-pub
+      
       # Completed: add deployment logic
       - name: Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID_ANDROID }}
           token: ${{ secrets.FIREBASE_CLI_TOKEN }}
-          groups: QA Testers
+          groups: qa-testers
           file: build/app/outputs/flutter-apk/app-release.apk
 
   
