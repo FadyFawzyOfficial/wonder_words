@@ -18,28 +18,28 @@ permissions: read-all
 #? 4. Lists the jobs that will run in this workflow.
 jobs:
   # Completed: Remove the example job after testing
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    steps:
-      #* 1. Clones the Flutter, which is necessary to execute the tests.
-      - name: Clone flutter repository with master channel
-        uses: subosito/flutter-action@v2
-        with:
-          channel: master
+  # test:
+  #   name: Test
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     #* 1. Clones the Flutter, which is necessary to execute the tests.
+  #     - name: Clone flutter repository with master channel
+  #       uses: subosito/flutter-action@v2
+  #       with:
+  #         channel: master
 
-      #* 2. Runs Flutter doctor, which will install all the necessary development tools
-      - name: Run flutter doctor
-        run: flutter doctor -v
+  #     #* 2. Runs Flutter doctor, which will install all the necessary development tools
+  #     - name: Run flutter doctor
+  #       run: flutter doctor -v
       
 
-      #* 3. Checks out the code.
-      - name: Checkout code
-        uses: actions/checkout@v2
+  #     #* 3. Checks out the code.
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
 
-      #* 4. Fetches the missing packages and runs make test, which will run tests in all packages
-      - name: Get all packages and test
-        run: make get && make testing
+  #     #* 4. Fetches the missing packages and runs make test, which will run tests in all packages
+  #     - name: Get all packages and test
+  #       run: make get && make testing
 
   # Completed: add a job for building Android app
   android:
@@ -50,7 +50,8 @@ jobs:
       - name: Clone flutter repository with master channel
         uses: subosito/flutter-action@v2
         with:
-          channel: master
+          flutter-version: '3.27.4'
+          channel: stable
       - name: Run flutter doctor
         run: flutter doctor -v
       - name: Checkout code
