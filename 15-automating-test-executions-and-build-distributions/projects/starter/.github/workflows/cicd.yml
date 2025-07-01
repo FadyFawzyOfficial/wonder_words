@@ -74,7 +74,14 @@ jobs:
       - name: Build apk
         run: flutter build apk
       
-      # ToDo: add deployment logic
+      # Completed: add deployment logic
+      - name: Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID_ANDROID }}
+          token: ${{ secrets.FIREBASE_CLI_TOKEN }}
+          groups: QA Testers
+          file: build/app/outputs/flutter-apk/app-release.apk
 
   
   
