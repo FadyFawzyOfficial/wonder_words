@@ -52,6 +52,14 @@ jobs:
         with:
           flutter-version: '3.27.4'
           channel: stable
+      
+      - name: Cache Flutter SDK
+        uses: actions/cache@v3
+        with:
+          path: ~/.flutter
+          key: ${{ runner.os }}-flutter-${{ hashFiles('pubspec.yaml') }}
+          restore-keys: ${{ runner.os }}-flutter
+      
       - name: Run flutter doctor
         run: flutter doctor -v
       - name: Checkout code
