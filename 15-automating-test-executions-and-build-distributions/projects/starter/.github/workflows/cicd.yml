@@ -52,7 +52,7 @@ jobs:
         with:
           flutter-version: '3.27.4'
           channel: stable
-      
+      #! Cache Flutter SDK in GitHub Actions to speed up builds
       - name: Cache Flutter SDK
         uses: actions/cache@v3
         with:
@@ -83,14 +83,14 @@ jobs:
       - name: Build apk
         run: flutter build apk
       
-      #! Cache other folders (pub-cache and build folder)
-      # - name: Cache pub packages
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: |
-      #       ~/.pub-cache
-      #     key: ${{ runner.os }}-pub-${{ hashFiles('pubspec.lock') }}
-      #     restore-keys: ${{ runner.os }}-pub
+      #! Cache other folders (pub-cache and build folder) for Faster CI runs
+      - name: Cache pub packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('pubspec.lock') }}
+          restore-keys: ${{ runner.os }}-pub
       
       # Completed: add deployment logic
       - name: Firebase App Distribution
