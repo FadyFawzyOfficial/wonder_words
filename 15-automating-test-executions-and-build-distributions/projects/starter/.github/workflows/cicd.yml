@@ -1,0 +1,159 @@
+#* 1. Defines the name for this specific workflow.
+name: Test, build and deploy
+
+#! 2. Specifies the events on which to execute this workflow. In this case,
+#! it will run when the pull request is merged to the develop branch as well as
+#! when new code is pushed to the develop branch.
+on:
+  pull_request:
+    branches:
+      - develop
+  push:
+    branches:
+      - develop
+
+#* 3. Defines the permission scope.
+permissions: read-all
+
+#? 4. Lists the jobs that will run in this workflow.
+jobs:
+  # Completed: Remove the example job after testing
+  # test:
+  #   name: Test
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     #* 1. Clones the Flutter, which is necessary to execute the tests.
+  #     - name: Clone flutter repository with master channel
+  #       uses: subosito/flutter-action@v2
+  #       with:
+  #         channel: master
+
+  #     #* 2. Runs Flutter doctor, which will install all the necessary development tools
+  #     - name: Run flutter doctor
+  #       run: flutter doctor -v
+      
+
+  #     #* 3. Checks out the code.
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
+
+  #     #* 4. Fetches the missing packages and runs make test, which will run tests in all packages
+  #     - name: Get all packages and test
+  #       run: make get && make testing
+
+  # Completed: add a job for building Android app
+  android:
+    name: Build Android
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout code
+      #! Checkout should happen before anything else
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up Flutter
+      #! 1. Clone Flutter, run Flutter doctor and check out the code.
+      - name: Clone flutter repository with stable channel (Set up Flutter)
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.4'
+          channel: stable
+      
+      # Run flutter doctor (for debug visibility)
+      - name: Run flutter doctor
+        run: flutter doctor -v
+
+      # Set up Java JDK
+      #! 2. Install Java JDK, which is required to build your app.
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+
+      #! subosito/flutter-action@v2 already Caches Flutter automatically.
+      #! Avoids re-downloading if the same version is already present.
+      #! Cache Flutter SDK in GitHub Actions to speed up builds
+      # - name: Cache Flutter SDK
+        # uses: actions/cache@v3
+        # with:
+          # path: ~/.flutter
+          # key: ${{ runner.os }}-flutter-${{ hashFiles('pubspec.yaml') }}
+          # restore-keys: ${{ runner.os }}-flutter
+      
+      # Cache pub packages
+      #! Cache other folders (pub-cache and build folder) for Faster CI runs
+      - name: Cache pub packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('pubspec.lock') }}
+          restore-keys: ${{ runner.os }}-pub
+      
+      - name: Cache Dart build artifacts
+        uses: actions/cache@v3
+        with:
+          path: |
+            .dart_tool
+            build
+          key: ${{ runner.os }}-dart-tool-${{ hashFiles('pubspec.lock') }}
+          restore-keys: ${{ runner.os }}-dart-tool
+      
+      # Cache Gradle dependencies
+      #! Enable build caching for Android
+      #* If your Gradle build downloads dependencies every time, it adds ~20–40s to your builds.
+      - name: Cache Gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle
+      
+      #! 3. Clean the repository and fetch packages.
+      #* Additionally, you could add `make lint` and `make format` commands here.
+      #* They would throw an error and cancel the build in cases where the app
+      #* doesn't obey the rules of linting or is in correctly formatted.
+      #? But the better option would be to use Git hooks with Flutter Lefthook,
+      #? which would run those 2 commands before committing.
+      #! In the case of any issues, it wouldn't let the developer push the changes to the remote.
+      #! This is a good practice, as it resolves formatting and linting issues before the build.
+      # Fetch dependencies
+      - name: Clean & Fetch packages
+        run: make get
+        #! Avoid unnecessary steps like make clean (make clean deletes the .dart_tool, build)
+        # run: make clean && make get
+        
+      #* 4. Finally, builds the Android APK.
+      - name: Build apk
+        run: flutter build apk
+      
+      # Distribute using Firebase App Distribution
+      # Completed: add deployment logic
+      - name: Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID_ANDROID }}
+          token: ${{ secrets.FIREBASE_CLI_TOKEN }}
+          groups: qa-testers
+          file: build/app/outputs/flutter-apk/app-release.apk
+
+  
+  
+  
+  
+  
+  
+  
+  
+  # #! 5. Defines the unique identifier for the job, Jobs from a single workflow run in
+  # #! parallel unless you define that one job is a prerequisite for another one.
+  # #! This is where those unique identifiers come in handy.
+  # example:
+  #   name: Example of a job
+  #   #* 6. Specifies the OS for the machine on which the job will run.
+  #   runs-on: ubuntu-latest
+  #   #* 7. Lists the steps that will run in a predefined order.
+  #   steps:
+  #     #* 8. Define the name of the step and command that will be executed
+  #     - name: Echo text
+  #       run: echo This\ is\ my\ first\ Github\ actions\ job
